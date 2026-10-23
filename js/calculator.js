@@ -46,10 +46,12 @@ class CasioCalculator {
     } catch (e) {}
   }
 
-  addHistory(expr, res) {
+  addHistory(expr, res, context = {}) {
     this.history.unshift({
       expr,
       result: res,
+      angleMode: this.angleMode,
+      ans: context.ans ?? this.ans,
       time: new Date().toLocaleTimeString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
@@ -255,18 +257,12 @@ class CasioCalculator {
   evaluate() {
     if (!this.expression.trim()) return;
 
-    let expr = this.expression;
+    const expr = this.expression;
     const originalExpr = expr;
+    const originalAns = this.ans;
 
     try {
-      expr = expr
-        .replace(/×10\^/g, "*10^")
-        .replace(/×/g, "*")
-        .replace(/÷/g, "/");
-      expr = expr.replace(/²/g, "^2").replace(/³/g, "^3");
-
-      // 2. Parse and evaluate with our safe mathematical parser
-      const val = this.parseExpression(expr);
+      const val = this.evaluateValue(expr);
 
       if (!Number.isFinite(val)) {
         this.result = "Math ERROR";
@@ -277,12 +273,31 @@ class CasioCalculator {
         this.result = this.formatNumber(val);
         this.isResultDisplayed = true;
         this.fractionMode = false;
-        this.addHistory(originalExpr, this.result);
+        this.addHistory(originalExpr, this.result, { ans: originalAns });
       }
     } catch (err) {
       this.result = "Syntax ERROR";
       this.isResultDisplayed = true;
     }
+  }
+
+  // Shared by live preview and committed calculations; does not mutate state.
+  evaluateValue(expression) {
+    const normalized = expression
+      .replace(/sqrt\s*\(/gi, "√(")
+      .replace(/cbrt\s*\(/gi, "∛(")
+      .replace(/asin\s*\(/gi, "sin⁻¹(")
+      .replace(/acos\s*\(/gi, "cos⁻¹(")
+      .replace(/atan\s*\(/gi, "tan⁻¹(")
+      .replace(/\bpi\b/gi, "π")
+      .replace(/\bans\b/gi, "Ans")
+      .replace(/−/g, "-")
+      .replace(/×10\^/g, "*10^")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/²/g, "^2")
+      .replace(/³/g, "^3");
+    return this.parseExpression(normalized);
   }
 
   parseExpression(raw) {

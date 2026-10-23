@@ -131,3 +131,43 @@ test("fraction toggle never replaces an error with stale result", () => {
   calc.toggleFraction();
   assert.equal(calc.result, "Math ERROR");
 });
+
+for (const [expression, expected] of [
+  ["sqrt(81)", 9],
+  ["cbrt(-8)", -2],
+  ["asin(0.5)", 30],
+  ["acos(0.5)", 60],
+  ["atan(1)", 45],
+  ["pi-pi+2", 2],
+  ["5−2", 3],
+])
+  test(`typed formula ${expression}`, () =>
+    assert.equal(calc.cleanFloat(calc.evaluateValue(expression)), expected));
+
+test("live preview does not mutate answer, history or displayed result", () => {
+  result("42");
+  const before = {
+    ans: calc.ans,
+    result: calc.result,
+    history: calc.history.length,
+    expression: calc.expression,
+  };
+  assert.equal(calc.evaluateValue("Ans*2"), 84);
+  assert.deepEqual(
+    {
+      ans: calc.ans,
+      result: calc.result,
+      history: calc.history.length,
+      expression: calc.expression,
+    },
+    before,
+  );
+});
+
+test("history captures the original answer and angle context", () => {
+  result("2");
+  result("Ans*3");
+  assert.equal(calc.history[0].ans, 2);
+  assert.equal(calc.history[0].angleMode, "DEG");
+  assert.equal(calc.history[0].result, "6");
+});

@@ -9,14 +9,14 @@
     <title>Calcspace — Máy tính & bộ công cụ của bạn</title>
     <meta
       name="description"
-      content="Máy tính khoa học Casio fx-570VN PLUS trực tuyến kết hợp bộ tính toán mạng IP CIDR Subnet và quy đổi đơn vị chuyên dụng cho SysAdmin / NetEng."
+      content="Máy tính khoa học trực tuyến với ô nhập công thức kết hợp bộ tính toán mạng IP CIDR Subnet và quy đổi đơn vị chuyên dụng cho SysAdmin / NetEng."
     />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#101411" />
 
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
-    <!-- Custom Casio fx-570 Stylesheet -->
+    <!-- Local design system -->
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body
@@ -144,565 +144,201 @@
       </div>
 
       <!-- ==================================================================== -->
-      <!-- VIEW 1: CASIO fx-570VN PLUS CALCULATOR                              -->
+      <!-- VIEW 1: FORMULA EDITOR                              -->
       <!-- ==================================================================== -->
       <section id="view-calc" class="calculator-workspace">
-        <aside class="workspace-intro">
-          <div class="section-number">01 / MÁY TÍNH KHOA HỌC</div>
-          <h2>
-            Quen thuộc.<br />
-            Nhưng tiện hơn.
-          </h2>
-          <p>
-            Cảm giác của một chiếc máy tính cầm tay, với sự tiện lợi ngay trên
-            trình duyệt.
-          </p>
-          <div class="feature-tags">
-            <span>DEG / RAD</span><span>Phân số</span><span>Lượng giác</span>
+        <div class="formula-workspace">
+          <div class="editor-heading">
+            <div>
+              <div class="section-number">01 / MÁY TÍNH KHOA HỌC</div>
+              <h2>
+                Ý tưởng của bạn.<br />
+                Đáp án ở ngay đây.
+              </h2>
+            </div>
+            <span class="editor-symbol" aria-hidden="true"
+              >ƒ<span>x</span></span
+            >
           </div>
-          <div class="try-examples">
-            <h3>THỬ MỘT PHÉP TÍNH <span>↘</span></h3>
-            <button data-example="(125+75)×15%">
-              <span>15% của 200</span><code>(125 + 75) × 15%</code
-              ><b>↗</b></button
-            ><button data-example="sin(30)²+cos(30)²">
-              <span>Một chút lượng giác</span><code>sin²(30) + cos²(30)</code
-              ><b>↗</b></button
-            ><button data-example="1/3+1/6">
-              <span>Chuyện của phân số</span><code>⅓ + ⅙</code><b>↗</b>
+          <form id="formula-form" class="formula-card" novalidate>
+            <div class="formula-topline">
+              <label for="formula-input">CÔNG THỨC CỦA BẠN</label>
+              <div class="angle-switch" role="group" aria-label="Đơn vị góc">
+                <button
+                  type="button"
+                  data-angle="DEG"
+                  aria-pressed="true"
+                  title="Tính góc theo độ"
+                >
+                  DEG</button
+                ><button
+                  type="button"
+                  data-angle="RAD"
+                  aria-pressed="false"
+                  title="Tính góc theo radian"
+                >
+                  RAD
+                </button>
+              </div>
+            </div>
+            <textarea
+              id="formula-input"
+              rows="2"
+              maxlength="1000"
+              inputmode="decimal"
+              enterkeyhint="done"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-describedby="formula-help formula-status"
+              placeholder="(125 + 75) × 15%"
+            ></textarea>
+            <div class="formula-edit-actions">
+              <span id="formula-help"
+                >Gõ công thức hoặc chọn các ký hiệu bên dưới.</span
+              ><button
+                type="button"
+                id="formula-clear"
+                title="Xóa công thức (Esc)"
+                aria-label="Xóa công thức"
+              >
+                Xóa <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="formula-result-area">
+              <div class="result-topline">
+                <span id="result-label">KẾT QUẢ XEM TRƯỚC</span>
+                <div class="result-actions">
+                  <button
+                    type="button"
+                    id="fraction-toggle"
+                    aria-pressed="false"
+                    disabled
+                    title="Đổi phân số và thập phân"
+                  >
+                    ½ ⇄ 0.5</button
+                  ><button
+                    type="button"
+                    id="copy-result"
+                    disabled
+                    aria-label="Sao chép kết quả"
+                    title="Sao chép kết quả"
+                  >
+                    Sao chép ↗
+                  </button>
+                </div>
+              </div>
+              <output
+                id="formula-result"
+                for="formula-input"
+                aria-live="polite"
+                aria-atomic="true"
+                >—</output
+              >
+              <div id="formula-status" role="status">
+                Một công thức nhỏ, khởi đầu cho một ý tưởng lớn.
+              </div>
+            </div>
+            <div class="formula-bottomline">
+              <span><kbd>Enter</kbd> tính & lưu lịch sử</span
+              ><button type="submit" class="calculate-button">
+                Tính kết quả <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </form>
+          <div class="math-toolbox" aria-label="Các nút toán học">
+            <div class="toolbox-title">
+              <h3>MỘT CHÚT TRỢ GIÚP</h3>
+              <span>Chọn một hàm để chèn tại con trỏ</span>
+            </div>
+            <div
+              class="math-key-row operators"
+              role="group"
+              aria-label="Phép toán cơ bản"
+            >
+              <button data-insert="+" aria-label="Cộng">+</button
+              ><button data-insert="−" aria-label="Trừ">−</button
+              ><button data-insert="×" aria-label="Nhân">×</button
+              ><button data-insert="÷" aria-label="Chia">÷</button
+              ><button data-insert="(" aria-label="Mở ngoặc">(</button
+              ><button data-insert=")" aria-label="Đóng ngoặc">)</button
+              ><button data-insert="." aria-label="Dấu thập phân">.</button
+              ><button data-insert="%" aria-label="Phần trăm">%</button>
+            </div>
+            <div
+              class="math-key-row"
+              role="group"
+              aria-label="Lũy thừa và hằng số"
+            >
+              <button data-template="√({})" title="Căn bậc hai">√x</button
+              ><button data-template="({})²" data-empty="²" title="Bình phương">
+                x²</button
+              ><button data-template="({})^" data-empty="^" title="Lũy thừa">
+                xʸ</button
+              ><button
+                data-template="({})/()"
+                data-empty="()/()"
+                data-fraction
+                title="Phân số"
+              >
+                a/b</button
+              ><button data-insert="π" title="Số pi">π</button
+              ><button data-insert="e" title="Hằng số Euler">e</button
+              ><button data-insert="Ans" title="Kết quả đã lưu gần nhất">
+                Ans</button
+              ><button data-template="abs({})" title="Giá trị tuyệt đối">
+                |x|
+              </button>
+            </div>
+            <div
+              class="math-key-row"
+              role="group"
+              aria-label="Logarit và lượng giác"
+            >
+              <button data-template="log({})" title="Logarit cơ số 10">
+                log</button
+              ><button data-template="ln({})" title="Logarit tự nhiên">
+                ln</button
+              ><button data-template="sin({})">sin</button
+              ><button data-template="cos({})">cos</button
+              ><button data-template="tan({})">tan</button
+              ><button data-template="sin⁻¹({})" title="Arcsin">sin⁻¹</button
+              ><button data-template="cos⁻¹({})" title="Arccos">cos⁻¹</button
+              ><button data-template="tan⁻¹({})" title="Arctan">tan⁻¹</button>
+            </div>
+            <details class="more-functions">
+              <summary>
+                Thêm hàm toán học <span aria-hidden="true">+</span>
+              </summary>
+              <div class="math-key-row">
+                <button data-template="∛({})" title="Căn bậc ba">∛x</button
+                ><button data-template="({})!" data-empty="!" title="Giai thừa">
+                  x!</button
+                ><button data-template="10^({})" title="10 mũ x">10ˣ</button
+                ><button data-template="e^({})" title="e mũ x">eˣ</button
+                ><button data-template="sinh({})">sinh</button
+                ><button data-template="cosh({})">cosh</button
+                ><button data-template="tanh({})">tanh</button
+                ><button data-insert="×10^" title="Ký hiệu khoa học">
+                  ×10ⁿ
+                </button>
+              </div>
+            </details>
+          </div>
+          <div class="editor-examples">
+            <span>THỬ NHANH</span
+            ><button type="button" data-example="(125+75)×15%">
+              15% của 200 <span>↗</span></button
+            ><button type="button" data-example="sin(30)²+cos(30)²">
+              sin² + cos² <span>↗</span></button
+            ><button type="button" data-example="1/3+1/6">
+              ⅓ + ⅙ <span>↗</span>
             </button>
           </div>
-          <div class="privacy-note">
-            <span>◈</span>
-            <p>
-              Tính toán ngay trên thiết bị.<br />Dữ liệu của bạn ở lại với bạn.
-            </p>
-          </div>
-        </aside>
-        <div class="calculator-stage">
-          <div class="stage-label">
-            <span>THE CLASSIC, REIMAGINED</span><span>fx–570</span>
-          </div>
-          <div class="casio-body">
-            <!-- Brand Header -->
-            <div class="casio-header">
-              <span class="casio-brand">CASIO</span>
-              <div class="text-right">
-                <span class="casio-model">fx-570VN PLUS</span>
-                <div class="text-[9px] tracking-wider text-slate-400 font-mono">
-                  NATURAL-V.P.A.M.
-                </div>
-              </div>
-            </div>
-
-            <div class="casio-subtext">SCIENTIFIC CALCULATOR • WEB EDITION</div>
-
-            <!-- LCD Screen Bezel -->
-            <div class="casio-screen-bezel">
-              <div class="casio-lcd">
-                <!-- Indicators Row -->
-                <div class="lcd-indicators">
-                  <span
-                    id="ind-shift"
-                    class="opacity-15 font-bold text-amber-900"
-                    >S</span
-                  >
-                  <span
-                    id="ind-alpha"
-                    class="opacity-15 font-bold text-rose-900"
-                  >
-                  </span>
-                  <span id="ind-mem" class="opacity-15 font-bold">M</span>
-                  <span id="ind-angle" class="font-bold">D</span>
-                  <span id="ind-math" class="font-bold ml-auto">Math ▲▼</span>
-                </div>
-
-                <!-- Calculation Expression (Top Line) -->
-                <div id="lcd-expression" class="lcd-expression"></div>
-
-                <!-- Result (Bottom Line) -->
-                <div id="lcd-result" aria-live="polite" class="lcd-result">
-                  0
-                </div>
-              </div>
-            </div>
-
-            <!-- Top Controls & Replay Pad -->
-            <div class="top-controls">
-              <!-- Left Column (Shift, Alpha) -->
-              <div class="side-fn-col">
-                <button class="btn-top btn-shift calc-btn" data-action="shift">
-                  <span>SHIFT</span>
-                </button>
-                <button
-                  class="btn-top btn-alpha calc-btn"
-                  data-action="constant"
-                  title="Nhập π; SHIFT để nhập e"
-                >
-                  <span>π / e</span>
-                </button>
-              </div>
-
-              <!-- Circular REPLAY D-Pad -->
-              <div class="replay-pad">
-                <button
-                  class="replay-btn replay-up calc-btn"
-                  data-action="replay-up"
-                  title="Xem lịch sử trước"
-                >
-                  ▲
-                </button>
-                <button
-                  class="replay-btn replay-left calc-btn"
-                  data-action="replay-left"
-                  title="Con trỏ trái"
-                >
-                  ◀
-                </button>
-                <div class="replay-center">REPLAY</div>
-                <button
-                  class="replay-btn replay-right calc-btn"
-                  data-action="replay-right"
-                  title="Con trỏ phải"
-                >
-                  ▶
-                </button>
-                <button
-                  class="replay-btn replay-down calc-btn"
-                  data-action="replay-down"
-                  title="Xem lịch sử sau"
-                >
-                  ▼
-                </button>
-              </div>
-
-              <!-- Right Column (Mode Setup, On) -->
-              <div class="side-fn-col">
-                <button
-                  class="btn-top calc-btn"
-                  data-action="mode"
-                  title="Menu: Máy tính, Mạng IP, Quy đổi, Lịch sử"
-                >
-                  <span>MODE</span>
-                </button>
-                <button
-                  class="btn-top calc-btn"
-                  data-action="on"
-                  title="Bật / Xóa sạch"
-                >
-                  <span>ON</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Scientific Function Keys Grid (3 rows x 6 cols) -->
-            <div class="sci-grid">
-              <!-- Row 1 -->
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="op"
-                  data-val="/"
-                  title="Phân số"
-                >
-                  ■/□
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">∛</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="√("
-                  title="Căn bậc 2"
-                >
-                  √
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">x³</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="op"
-                  data-val="²"
-                  title="Bình phương"
-                >
-                  x²
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="op"
-                  data-val="^"
-                  title="Lũy thừa"
-                >
-                  x^□
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">10^x</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="log("
-                  title="Logarit cơ số 10"
-                >
-                  log
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">e^x</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="ln("
-                  title="Logarit tự nhiên"
-                >
-                  ln
-                </button>
-              </div>
-
-              <!-- Row 2 -->
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="pm"
-                  title="Đảo dấu âm"
-                >
-                  (-)
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="angle"
-                  title="Đổi Độ / Radian"
-                >
-                  ° ' "
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="abs("
-                  title="Giá trị tuyệt đối"
-                >
-                  abs
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">sin⁻¹</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="sin("
-                  title="Sin"
-                >
-                  sin
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">cos⁻¹</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="cos("
-                  title="Cos"
-                >
-                  cos
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">tan⁻¹</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="fn"
-                  data-val="tan("
-                  title="Tan"
-                >
-                  tan
-                </button>
-              </div>
-
-              <!-- Row 3 -->
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="recall"
-                  title="Đọc bộ nhớ M; SHIFT để xóa bộ nhớ"
-                >
-                  RCL
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="exp"
-                  title="Nhập lũy thừa 10"
-                >
-                  EXP
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">%</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="op"
-                  data-val="("
-                  title="Mở ngoặc"
-                >
-                  (
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="op"
-                  data-val=")"
-                  title="Đóng ngoặc"
-                >
-                  )
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift font-bold"> </span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="sd"
-                  title="Chuyển Phân số ↔ Thập phân"
-                >
-                  S⇔D
-                </button>
-              </div>
-              <div class="btn-sci-wrap">
-                <span class="btn-label-sub label-shift">M-</span>
-                <button
-                  class="btn-sci calc-btn"
-                  data-action="memory"
-                  title="Thêm vào bộ nhớ"
-                >
-                  M+
-                </button>
-              </div>
-            </div>
-
-            <!-- Numeric & Basic Operations Keypad (4 rows x 5 cols) -->
-            <div class="numpad-grid">
-              <!-- Row 1: 7, 8, 9, DEL, AC -->
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="7"
-                >
-                  7
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="8"
-                >
-                  8
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="9"
-                >
-                  9
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-del calc-btn"
-                  data-action="del"
-                  title="Xóa ký tự cuối"
-                >
-                  DEL
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-ac calc-btn"
-                  data-action="ac"
-                  title="Xóa toàn bộ"
-                >
-                  AC
-                </button>
-              </div>
-
-              <!-- Row 2: 4, 5, 6, *, / -->
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="4"
-                >
-                  4
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="5"
-                >
-                  5
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="6"
-                >
-                  6
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-op calc-btn"
-                  data-action="op"
-                  data-val="×"
-                >
-                  ×
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-op calc-btn"
-                  data-action="op"
-                  data-val="÷"
-                >
-                  ÷
-                </button>
-              </div>
-
-              <!-- Row 3: 1, 2, 3, +, - -->
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="1"
-                >
-                  1
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="2"
-                >
-                  2
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="3"
-                >
-                  3
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-op calc-btn"
-                  data-action="op"
-                  data-val="+"
-                >
-                  +
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-op calc-btn"
-                  data-action="op"
-                  data-val="-"
-                >
-                  -
-                </button>
-              </div>
-
-              <!-- Row 4: 0, ., *10^x, Ans, = -->
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="num"
-                  data-val="0"
-                >
-                  0
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift"> </span>
-                <button
-                  class="btn-pad btn-digit calc-btn"
-                  data-action="dot"
-                  data-val="."
-                >
-                  •
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift">π</span>
-                <button class="btn-pad btn-digit calc-btn" data-action="exp">
-                  ×10^x
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift">%</span>
-                <button class="btn-pad btn-digit calc-btn" data-action="ans">
-                  Ans
-                </button>
-              </div>
-              <div class="btn-num-wrap">
-                <span class="btn-label-sub label-shift font-bold">≈</span>
-                <button
-                  class="btn-pad btn-equals calc-btn"
-                  data-action="equals"
-                >
-                  =
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="keyboard-hint">
-            <kbd>Enter</kbd> tính kết quả <span>·</span> <kbd>Esc</kbd> xóa tất
-            cả
-          </div>
+          <p class="editor-privacy">
+            <span aria-hidden="true">◈</span> Tính toán trên thiết bị. Công thức
+            của bạn ở lại với bạn.
+          </p>
         </div>
         <aside class="workspace-side">
           <div class="side-title">
@@ -1053,8 +689,7 @@
               <h2
                 class="text-xl font-bold text-slate-100 flex items-center gap-2"
               >
-                <span class="text-indigo-400">📜</span> Lịch Sử Tính Toán Máy
-                Tính fx-570
+                <span class="text-indigo-400">📜</span> Lịch sử tính toán
               </h2>
               <p class="text-xs text-slate-400 mt-0.5">
                 Click vào bất kỳ phép tính nào để nạp lại vào máy tính.

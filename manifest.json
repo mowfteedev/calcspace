@@ -1,7 +1,7 @@
 {
   "name": "Calcspace — Máy tính & bộ công cụ",
   "short_name": "Calcspace",
-  "description": "Máy tính Casio fx-570VN PLUS kết hợp tính IP Subnet và quy đổi đơn vị",
+  "description": "Máy tính khoa học với ô nhập công thức, xem trước kết quả, IPv4 subnet và quy đổi đơn vị",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#101411",

@@ -1,9 +1,7 @@
-// Main UI Orchestrator for Casio fx-570VN PLUS & Toolkit
+// Calcspace — formula editor and toolkit interactions.
 document.addEventListener("DOMContentLoaded", () => {
   // Mode state: 'calc', 'ip', 'conv', 'history'
   let currentTab = "calc";
-  let isMenuMode = false;
-  let replayIndex = -1;
   const escapeHTML = (value) =>
     String(value ?? "").replace(
       /[&<>"']/g,
@@ -65,20 +63,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const soundBtn = document.getElementById("btn-sound-toggle");
   const themeBtn = document.getElementById("btn-theme-toggle");
 
-  // Calculator Screen Elements
-  const lcdExpr = document.getElementById("lcd-expression");
-  const lcdResult = document.getElementById("lcd-result");
-  const indShift = document.getElementById("ind-shift");
-  const indAlpha = document.getElementById("ind-alpha");
-  const indAngle = document.getElementById("ind-angle");
-  const indMath = document.getElementById("ind-math");
+  const formulaInput = document.getElementById("formula-input");
+  const formulaResult = document.getElementById("formula-result");
+  const formulaStatus = document.getElementById("formula-status");
+  const fractionButton = document.getElementById("fraction-toggle");
+  const copyResultButton = document.getElementById("copy-result");
+  let previewValue = null;
+  let displayFraction = false;
+  let committed = false;
+  let historyCursor = -1;
+  let draftExpression = "";
+  let lastCommit = "";
 
   // ----------------------------------------------------
   // Tab Switching
   // ----------------------------------------------------
   function switchTab(tabName) {
     currentTab = tabName;
-    isMenuMode = false;
     tabButtons.forEach((btn) => {
       if (btn.dataset.tab === tabName) {
         btn.classList.add("active");
@@ -121,10 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", () => switchTab("history"));
   document.querySelectorAll("[data-example]").forEach((button) =>
     button.addEventListener("click", () => {
-      window.casioCalc.clear();
-      window.casioCalc.expression = button.dataset.example;
-      window.casioCalc.evaluate();
-      updateScreen();
+      loadFormula(button.dataset.example);
     }),
   );
 
@@ -163,348 +161,231 @@ document.addEventListener("DOMContentLoaded", () => {
     if (label) label.textContent = "Tối";
   }
 
-  // ----------------------------------------------------
-  // Casio fx-570 Screen Update
-  // ----------------------------------------------------
-  function updateScreen() {
-    if (isMenuMode) {
-      lcdExpr.textContent = "1: COMP      2: IP-NET";
-      lcdResult.textContent = "3: CONV      4: HISTORY";
-      return;
-    }
-
+  // Formula editor: the native textarea owns selection, undo, paste and IME.
+  function updateScreen(showError = false) {
     const calc = window.casioCalc;
-    lcdExpr.textContent = calc.isResultDisplayed
-      ? calc.expression
-      : calc.expression.slice(0, calc.cursor) +
-        "▏" +
-        calc.expression.slice(calc.cursor);
-    document.getElementById("ind-mem").style.opacity = calc.memory
-      ? "1"
-      : "0.15";
+    if (formulaInput.value !== calc.expression)
+      formulaInput.value = calc.expression;
+    formulaInput.style.height = "auto";
+    formulaInput.style.height =
+      Math.min(220, Math.max(80, formulaInput.scrollHeight)) + "px";
+    document
+      .querySelectorAll("[data-angle]")
+      .forEach((button) =>
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.angle === calc.angleMode),
+        ),
+      );
+    const savedPreview = previewValue;
+    previewValue = null;
+    let message = "Một công thức nhỏ, khởi đầu cho một ý tưởng lớn.";
+    let output = "—";
+    let invalid = false;
+    if (calc.expression.trim()) {
+      try {
+        const value =
+          committed && savedPreview !== null
+            ? savedPreview
+            : calc.evaluateValue(calc.expression);
+        if (!Number.isFinite(value)) {
+          invalid = true;
+          message =
+            "Phép tính không có kết quả thực hữu hạn. Kiểm tra miền xác định hoặc phép chia cho 0.";
+        } else {
+          previewValue = value;
+          output = calc.formatNumber(value);
+          if (displayFraction) {
+            const fraction = calc.toFraction(value);
+            if (fraction) output = `${fraction.num}/${fraction.den}`;
+          }
+          message = committed
+            ? "Đã lưu vào lịch sử. Bạn có thể tiếp tục sửa công thức."
+            : "Xem trước trực tiếp · Nhấn Enter để lưu kết quả.";
+        }
+      } catch {
+        invalid = showError;
+        message = showError
+          ? "Công thức chưa hợp lệ. Kiểm tra dấu ngoặc, tên hàm và các phép toán."
+          : "Tiếp tục nhập công thức…";
+      }
+    }
+    formulaResult.textContent = output;
+    formulaStatus.textContent = message;
+    formulaInput.setAttribute("aria-invalid", String(invalid));
+    document
+      .getElementById("formula-form")
+      .classList.toggle("has-error", invalid);
+    document.getElementById("result-label").textContent =
+      committed && previewValue !== null
+        ? "KẾT QUẢ CỦA BẠN"
+        : "KẾT QUẢ XEM TRƯỚC";
+    fractionButton.disabled = previewValue === null;
+    fractionButton.setAttribute("aria-pressed", String(displayFraction));
+    copyResultButton.disabled = previewValue === null;
     renderRecentHistory();
-    lcdResult.textContent = window.casioCalc.result;
-    lcdExpr.scrollLeft = lcdExpr.scrollWidth;
-
-    if (indShift)
-      indShift.style.opacity = window.casioCalc.shiftActive ? "1" : "0.15";
-    if (indAlpha)
-      indAlpha.style.opacity = window.casioCalc.alphaActive ? "1" : "0.15";
-    if (indAngle)
-      indAngle.textContent = window.casioCalc.angleMode === "DEG" ? "D" : "R";
-    if (indMath) indMath.style.opacity = "1";
   }
 
-  // ----------------------------------------------------
-  // Calculator Key Click Handling
-  // ----------------------------------------------------
-  const calcButtons = document.querySelectorAll(".calc-btn");
-  calcButtons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      window.soundEngine.playClick();
-      handleCalcAction(btn.dataset.action, btn.dataset.val);
-    });
-  });
-
-  function handleCalcAction(action, val) {
-    const calc = window.casioCalc;
-    const isShift = calc.shiftActive;
-
-    // Reset shift/alpha after consuming action unless toggling them
-    if (action !== "shift" && action !== "alpha") {
-      calc.shiftActive = false;
-      calc.alphaActive = false;
-    }
-
-    // If currently in MODE menu
-    if (isMenuMode) {
-      if (val === "1" || (action === "num" && val === "1")) {
-        isMenuMode = false;
-        switchTab("calc");
-        updateScreen();
-        return;
-      }
-      if (val === "2" || (action === "num" && val === "2")) {
-        isMenuMode = false;
-        switchTab("ip");
-        updateScreen();
-        return;
-      }
-      if (val === "3" || (action === "num" && val === "3")) {
-        isMenuMode = false;
-        switchTab("conv");
-        updateScreen();
-        return;
-      }
-      if (val === "4" || (action === "num" && val === "4")) {
-        isMenuMode = false;
-        switchTab("history");
-        updateScreen();
-        return;
-      }
-      // Any other key exits menu mode
-      isMenuMode = false;
-    }
-
-    switch (action) {
-      case "num":
-      case "dot":
-        if (isShift && val === ".") calc.input(String(Math.random()));
-        else calc.input(val);
-        break;
-
-      case "op":
-        calc.input(
-          isShift && val === "²" ? "³" : isShift && val === "(" ? "%" : val,
-        );
-        break;
-
-      case "fn":
-        if (isShift && btnHasShift(val)) {
-          calc.input(getShiftFn(val));
-        } else {
-          calc.input(val);
-        }
-        break;
-
-      case "shift":
-        calc.toggleShift();
-        break;
-
-      case "constant":
-      case "alpha":
-        calc.input(isShift ? "e" : "π");
-        break;
-
-      case "mode":
-        isMenuMode = !isMenuMode;
-        break;
-
-      case "on":
-      case "ac":
-        isMenuMode = false;
-        calc.clear();
-        break;
-
-      case "del":
-        calc.deleteChar();
-        break;
-
-      case "equals":
-        calc.evaluate();
-        break;
-
-      case "sd": // S<=>D fraction / decimal toggle
-        calc.toggleFraction();
-        break;
-
-      case "angle":
-        calc.toggleAngleMode();
-        break;
-
-      case "recall":
-        if (isShift) {
-          calc.memory = 0;
-          toast("Đã xóa bộ nhớ");
-        } else calc.input("(" + calc.cleanFloat(calc.memory) + ")");
-        break;
-
-      case "memory":
-        if (!calc.isResultDisplayed) calc.evaluate();
-        if (calc.isResultDisplayed && !calc.result.includes("ERROR")) {
-          calc.memory += (isShift ? -1 : 1) * calc.rawResult;
-          toast("Bộ nhớ M = " + calc.formatNumber(calc.memory));
-        }
-        break;
-
-      case "ans":
-        calc.input(isShift ? "%" : "Ans");
-        break;
-
-      case "exp":
-        calc.input(isShift ? "π" : "×10^");
-        break;
-
-      case "pm": // plus-minus
-        if (calc.isResultDisplayed && !calc.result.includes("ERROR")) {
-          calc.expression = "-Ans";
-          calc.evaluate();
-        } else calc.input("-");
-        break;
-
-      case "replay-up":
-      case "replay-down":
-        if (calc.history.length) {
-          replayIndex = Math.max(
-            0,
-            Math.min(
-              calc.history.length - 1,
-              replayIndex + (action === "replay-up" ? 1 : -1),
-            ),
-          );
-          const item = calc.history[replayIndex];
-          calc.expression = item.expr;
-          calc.isResultDisplayed = false;
-        }
-        break;
-      case "replay-left":
-      case "replay-right":
-        calc.isResultDisplayed = false;
-        calc.cursor = Math.max(
-          0,
-          Math.min(
-            calc.expression.length,
-            calc.cursor + (action === "replay-left" ? -1 : 1),
-          ),
-        );
-        break;
-
-      default:
-        if (val) calc.input(val);
-        break;
-    }
-
+  function changed() {
+    window.casioCalc.expression = formulaInput.value;
+    window.casioCalc.isResultDisplayed = false;
+    committed = false;
+    displayFraction = false;
+    lastCommit = "";
+    historyCursor = -1;
     updateScreen();
   }
 
-  function btnHasShift(fn) {
-    return ["sin(", "cos(", "tan(", "log(", "ln(", "√(", "x²", "^"].includes(
-      fn,
-    );
+  function loadFormula(expression, context = {}) {
+    if (context.angleMode === "DEG" || context.angleMode === "RAD")
+      window.casioCalc.angleMode = context.angleMode;
+    if (/\bans\b/i.test(expression) && Number.isFinite(context.ans))
+      window.casioCalc.ans = context.ans;
+    formulaInput.value = expression;
+    changed();
+    formulaInput.focus({ preventScroll: true });
+    formulaInput.setSelectionRange(expression.length, expression.length);
   }
 
-  function getShiftFn(fn) {
-    switch (fn) {
-      case "sin(":
-        return "sin⁻¹(";
-      case "cos(":
-        return "cos⁻¹(";
-      case "tan(":
-        return "tan⁻¹(";
-      case "log(":
-        return "10^(";
-      case "ln(":
-        return "e^(";
-      case "√(":
-        return "∛(";
-      case "x²":
-        return "³";
-      default:
-        return fn;
+  function insertMath(button) {
+    const start = formulaInput.selectionStart;
+    const end = formulaInput.selectionEnd;
+    const selected = formulaInput.value.slice(start, end);
+    let insertion = button.dataset.insert;
+    let caret;
+    if (button.dataset.template) {
+      const template =
+        selected || !button.dataset.empty
+          ? button.dataset.template
+          : button.dataset.empty;
+      const slot = template.indexOf("{}");
+      insertion = template.replace("{}", selected);
+      caret = start + (slot >= 0 ? slot + selected.length : insertion.length);
+      // With a selection, leave a complete function ready for the next operator.
+      if (selected) caret = start + insertion.length;
+      if (button.hasAttribute("data-fraction"))
+        caret = selected ? start + insertion.length - 1 : start + 1;
+    } else caret = start + insertion.length;
+    if (
+      formulaInput.value.length - (end - start) + insertion.length >
+      formulaInput.maxLength
+    ) {
+      toast("Công thức tối đa 1.000 ký tự.");
+      return;
     }
+    formulaInput.focus({ preventScroll: true });
+    formulaInput.setSelectionRange(start, end);
+    // insertText preserves the browser's native undo stack; fall back when unavailable.
+    if (!document.execCommand("insertText", false, insertion)) {
+      formulaInput.setRangeText(insertion, start, end, "end");
+      changed();
+    }
+    formulaInput.setSelectionRange(caret, caret);
+    window.soundEngine.playClick();
   }
 
-  // ----------------------------------------------------
-  // Keyboard Support
-  // ----------------------------------------------------
-  window.addEventListener("keydown", (e) => {
-    // Only capture keyboard in calculator tab and when no input field is focused
-    if (
-      currentTab !== "calc" ||
-      document.activeElement.tagName === "INPUT" ||
-      document.activeElement.tagName === "SELECT"
+  document
+    .querySelectorAll("[data-insert], [data-template]")
+    .forEach((button) => {
+      button.type = "button";
+      button.addEventListener("mousedown", (event) => event.preventDefault());
+      button.addEventListener("click", () => insertMath(button));
+    });
+  formulaInput.addEventListener("input", (event) => {
+    if (!event.isComposing) changed();
+  });
+  formulaInput.addEventListener("compositionend", changed);
+  formulaInput.addEventListener("keydown", (event) => {
+    if (event.isComposing || event.keyCode === 229) return;
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      document.getElementById("formula-form").requestSubmit();
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      loadFormula("");
+    } else if (
+      (event.altKey && event.key === "ArrowUp") ||
+      (event.altKey && event.key === "ArrowDown")
     ) {
-      return;
+      event.preventDefault();
+      const history = window.casioCalc.history;
+      if (!history.length) return;
+      if (historyCursor === -1) draftExpression = formulaInput.value;
+      const next = Math.max(
+        -1,
+        Math.min(
+          history.length - 1,
+          historyCursor + (event.key === "ArrowUp" ? 1 : -1),
+        ),
+      );
+      loadFormula(next === -1 ? draftExpression : history[next].expr);
+      historyCursor = next;
     }
-
-    if (
-      e.ctrlKey ||
-      e.metaKey ||
-      e.altKey ||
-      e.target.isContentEditable ||
-      e.target.tagName === "TEXTAREA"
-    )
-      return;
-    const key = e.key;
-    if (key === "Enter" && e.target.tagName === "BUTTON") return;
-    if (
-      key === "ArrowLeft" ||
-      key === "ArrowRight" ||
-      key === "ArrowUp" ||
-      key === "ArrowDown"
-    ) {
-      e.preventDefault();
-      handleCalcAction("replay-" + key.slice(5).toLowerCase());
-      return;
+  });
+  document
+    .getElementById("formula-clear")
+    .addEventListener("click", () => loadFormula(""));
+  document
+    .getElementById("formula-form")
+    .addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!formulaInput.value.trim()) {
+        formulaInput.focus();
+        return;
+      }
+      updateScreen(true);
+      if (previewValue === null) {
+        formulaInput.focus();
+        return;
+      }
+      const calc = window.casioCalc;
+      const key = JSON.stringify([
+        calc.expression,
+        calc.angleMode,
+        previewValue,
+      ]);
+      if (key !== lastCommit) {
+        // Commit the exact preview before Ans changes, keeping preview and saved result identical.
+        calc.rawResult = previewValue;
+        calc.result = calc.formatNumber(previewValue);
+        calc.addHistory(calc.expression, calc.result, { ans: calc.ans });
+        calc.ans = previewValue;
+        lastCommit = key;
+      }
+      committed = true;
+      document.getElementById("result-label").textContent = "KẾT QUẢ CỦA BẠN";
+      formulaStatus.textContent =
+        "Đã lưu vào lịch sử. Bạn có thể tiếp tục sửa công thức.";
+      renderRecentHistory();
+      window.soundEngine.playBeep();
+    });
+  document.querySelectorAll("[data-angle]").forEach((button) =>
+    button.addEventListener("click", () => {
+      window.casioCalc.angleMode = button.dataset.angle;
+      committed = false;
+      lastCommit = "";
+      updateScreen();
+    }),
+  );
+  fractionButton.addEventListener("click", () => {
+    displayFraction = !displayFraction;
+    // Render the current value without resolving Ans again after a commit.
+    if (previewValue !== null) {
+      const fraction = displayFraction
+        ? window.casioCalc.toFraction(previewValue)
+        : null;
+      formulaResult.textContent = fraction
+        ? `${fraction.num}/${fraction.den}`
+        : window.casioCalc.formatNumber(previewValue);
+      fractionButton.setAttribute("aria-pressed", String(displayFraction));
     }
-    if (key === "%" || key === "!") {
-      e.preventDefault();
-      handleCalcAction("op", key);
-      return;
-    }
-
-    if (key >= "0" && key <= "9") {
-      window.soundEngine.playClick();
-      handleCalcAction("num", key);
-      e.preventDefault();
-    } else if (key === "+" || key === "-") {
-      window.soundEngine.playClick();
-      handleCalcAction("op", key);
-      e.preventDefault();
-    } else if (key === "*") {
-      window.soundEngine.playClick();
-      handleCalcAction("op", "×");
-      e.preventDefault();
-    } else if (key === "/") {
-      window.soundEngine.playClick();
-      handleCalcAction("op", "÷");
-      e.preventDefault();
-    } else if (key === "." || key === ",") {
-      window.soundEngine.playClick();
-      handleCalcAction("dot", ".");
-      e.preventDefault();
-    } else if (key === "Enter" || key === "=") {
-      window.soundEngine.playClick();
-      handleCalcAction("equals");
-      e.preventDefault();
-    } else if (key === "Backspace") {
-      window.soundEngine.playClick();
-      handleCalcAction("del");
-      e.preventDefault();
-    } else if (key === "Escape") {
-      window.soundEngine.playClick();
-      handleCalcAction("ac");
-      e.preventDefault();
-    } else if (key === "(" || key === ")") {
-      window.soundEngine.playClick();
-      handleCalcAction("op", key);
-      e.preventDefault();
-    } else if (key === "^") {
-      window.soundEngine.playClick();
-      handleCalcAction("op", "^");
-      e.preventDefault();
-    } else if (key === "s" || key === "S") {
-      window.soundEngine.playClick();
-      handleCalcAction("fn", "sin(");
-      e.preventDefault();
-    } else if (key === "c" || key === "C") {
-      window.soundEngine.playClick();
-      handleCalcAction("fn", "cos(");
-      e.preventDefault();
-    } else if (key === "t" || key === "T") {
-      window.soundEngine.playClick();
-      handleCalcAction("fn", "tan(");
-      e.preventDefault();
-    } else if (key === "l" || key === "L") {
-      window.soundEngine.playClick();
-      handleCalcAction("fn", "log(");
-      e.preventDefault();
-    } else if (key === "d" || key === "D") {
-      window.soundEngine.playClick();
-      handleCalcAction("sd");
-      e.preventDefault();
-    } else if (key === "m" || key === "M") {
-      window.soundEngine.playClick();
-      handleCalcAction("mode");
-      e.preventDefault();
-    } else if (key === "Shift") {
-      window.soundEngine.playClick();
-      handleCalcAction("shift");
-      e.preventDefault();
-    } else if (key === "Alt" || key === "a" || key === "A") {
-      window.soundEngine.playClick();
-      handleCalcAction("alpha");
-      e.preventDefault();
+  });
+  copyResultButton.addEventListener("click", async () => {
+    try {
+      await copyText(formulaResult.textContent);
+      toast("Đã sao chép kết quả");
+    } catch {
+      toast("Không thể sao chép. Hãy chọn kết quả để chép thủ công.");
     }
   });
 
@@ -900,7 +781,7 @@ document.addEventListener("DOMContentLoaded", () => {
       historyList.innerHTML = `
         <div class="text-center py-12 text-neutral-400">
           <p class="text-base font-semibold">Chưa có phép tính nào</p>
-          <p class="text-xs text-neutral-500 mt-1">Các phép tính thực hiện trên máy tính Casio sẽ được lưu tự động tại đây.</p>
+          <p class="text-xs text-neutral-500 mt-1">Nhấn Enter hoặc Tính kết quả để lưu phép tính tại đây.</p>
         </div>
       `;
       return;
@@ -929,11 +810,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const idx = el.dataset.idx;
         const item = list[idx];
         if (item) {
-          window.casioCalc.expression = item.expr;
-          window.casioCalc.isResultDisplayed = false;
-          window.casioCalc.result = "0";
           switchTab("calc");
-          updateScreen();
+          loadFormula(item.expr, item);
         }
       });
     });
@@ -964,9 +842,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
     container.querySelectorAll("button").forEach((button) =>
       button.addEventListener("click", () => {
-        window.casioCalc.expression = list[Number(button.dataset.index)].expr;
-        window.casioCalc.isResultDisplayed = false;
-        updateScreen();
+        const item = list[Number(button.dataset.index)];
+        loadFormula(item.expr, item);
       }),
     );
   }

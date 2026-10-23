@@ -1,546 +1,25 @@
-/* ==========================================================================
-   Casio fx-570VN PLUS & SysAdmin Toolkit - Design System & Styles
-   ========================================================================== */
-
-:root {
-  --bg-app: #0f172a;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --surface-card: #1e293b;
-  --border-card: #334155;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-
-  /* Casio Casing Palette */
-  --casing-bg: linear-gradient(175deg, #404854 0%, #2b323c 60%, #1e232a 100%);
-  --casing-border: #4d5766;
-  --casing-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
-
-  /* Casio LCD Palette */
-  --lcd-bg: #9ea897;
-  --lcd-text: #192018;
-  --lcd-dim: rgba(25, 32, 24, 0.25);
-  --lcd-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 0 2px rgba(0, 0, 0, 0.6);
-
-  /* Button Colors */
-  --btn-num-bg: linear-gradient(180deg, #f1f3f6 0%, #d8dde6 100%);
-  --btn-num-text: #111827;
-  --btn-num-shadow: 0 3px 0 #9ca3af, 0 4px 6px rgba(0, 0, 0, 0.3);
-
-  --btn-fn-bg: linear-gradient(180deg, #374151 0%, #1f2937 100%);
-  --btn-fn-text: #f3f4f6;
-  --btn-fn-shadow: 0 3px 0 #111827, 0 4px 6px rgba(0, 0, 0, 0.4);
-
-  --btn-del-bg: linear-gradient(180deg, #ea580c 0%, #c2410c 100%);
-  --btn-del-text: #ffffff;
-  --btn-del-shadow: 0 3px 0 #9a3412, 0 4px 6px rgba(0, 0, 0, 0.3);
-
-  --btn-ac-bg: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
-  --btn-ac-text: #ffffff;
-  --btn-ac-shadow: 0 3px 0 #c2410c, 0 4px 6px rgba(0, 0, 0, 0.3);
-
-  --shift-color: #facc15;
-  --alpha-color: #f43f5e;
-}
-
-html.light {
-  --bg-app: #f1f5f9;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --surface-card: #ffffff;
-  --border-card: #e2e8f0;
-
-  --casing-bg: linear-gradient(175deg, #e2e8f0 0%, #cbd5e1 60%, #94a3b8 100%);
-  --casing-border: #94a3b8;
-  --casing-shadow:
-    0 20px 35px -10px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.08);
-
-  --lcd-bg: #b4c2b0;
-  --lcd-text: #111811;
-  --lcd-dim: rgba(17, 24, 17, 0.2);
-
-  --btn-fn-bg: linear-gradient(180deg, #4b5563 0%, #374151 100%);
-  --btn-fn-shadow: 0 3px 0 #1f2937, 0 3px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Base Body Styles */
+/* Calcspace — shared surfaces and formula workspace. */
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  background-color: var(--bg-app);
-  color: var(--text-main);
   margin: 0;
-  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-/* Nav Tabs */
 .tab-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
   font-weight: 600;
-  border-radius: 9999px;
   color: var(--text-muted);
-  background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease-in-out;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
-
 .tab-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-card);
 }
-
-.tab-btn.active {
-  color: #ffffff;
-  background: var(--primary);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-}
-
-/* ==========================================================================
-   CASIO fx-570VN PLUS Casing
-   ========================================================================== */
-.casio-body {
-  width: 100%;
-  max-width: 410px;
-  margin: 0 auto;
-  background: var(--casing-bg);
-  border: 2px solid var(--casing-border);
-  border-radius: 28px 28px 40px 40px;
-  box-shadow: var(--casing-shadow);
-  padding: 1.25rem 1.15rem 1.5rem 1.15rem;
-  position: relative;
-  user-select: none;
-}
-
-/* Top Branding Bar */
-.casio-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-  padding: 0 0.25rem;
-}
-
-.casio-brand {
-  font-family: "Arial Black", Impact, sans-serif;
-  font-size: 1.15rem;
-  letter-spacing: 0.08em;
-  color: #f1f5f9;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.casio-model {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #93c5fd;
-}
-
-.casio-subtext {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #94a3b8;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-/* LCD Display Area */
-.casio-screen-bezel {
-  background: #111827;
-  border-radius: 12px;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.8);
-  margin-bottom: 1.15rem;
-}
-
-.casio-lcd {
-  background: var(--lcd-bg);
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  box-shadow: var(--lcd-shadow);
-  color: var(--lcd-text);
-  font-family: "Courier New", Courier, monospace;
-}
-
-/* LCD Status Header */
-.lcd-indicators {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.625rem;
-  font-weight: 700;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px dotted rgba(25, 32, 24, 0.25);
-  margin-bottom: 0.35rem;
-  letter-spacing: 0.05em;
-}
-
-.lcd-indicators span {
-  transition: opacity 0.15s ease;
-}
-
-/* LCD Expression & Result Lines */
-.lcd-expression {
-  height: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.5rem;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  letter-spacing: 0.05em;
-  scrollbar-width: none;
-}
-
-.lcd-expression::-webkit-scrollbar {
-  display: none;
-}
-
-.lcd-result {
-  height: 2.2rem;
-  font-size: 1.5rem;
-  font-weight: 800;
-  line-height: 2.2rem;
-  text-align: right;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  letter-spacing: 0.05em;
-  scrollbar-width: none;
-}
-
-.lcd-result::-webkit-scrollbar {
-  display: none;
-}
-
-/* ==========================================================================
-   Cụm Phím Điều Hướng & Chức Năng Trên (Top Function & Replay)
-   ========================================================================== */
-.top-controls {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.85rem;
-}
-
-.side-fn-col {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-/* Replay Circular D-Pad */
-.replay-pad {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto;
-  background: radial-gradient(circle at 35% 35%, #4b5563, #1f2937);
-  border-radius: 50%;
-  border: 3px solid #374151;
-  box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.5),
-    inset 0 2px 4px rgba(255, 255, 255, 0.2);
-  display: grid;
-  grid-template-areas:
-    ". up ."
-    "left center right"
-    ". down .";
-  grid-template-columns: 1fr 1.2fr 1fr;
-  grid-template-rows: 1fr 1.2fr 1fr;
-  align-items: center;
-  justify-items: center;
-  position: relative;
-}
-
-.replay-center {
-  grid-area: center;
-  font-size: 0.55rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: #9ca3af;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.replay-btn {
-  background: transparent;
-  border: none;
-  color: #cbd5e1;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform 0.1s,
-    color 0.1s;
-}
-
-.replay-btn:hover {
-  color: #ffffff;
-}
-
-.replay-btn:active {
-  transform: scale(0.88);
-}
-
-.replay-up {
-  grid-area: up;
-}
-.replay-down {
-  grid-area: down;
-}
-.replay-left {
-  grid-area: left;
-}
-.replay-right {
-  grid-area: right;
-}
-
-/* Top Mini Buttons (Shift, Alpha, Mode, On) */
-.btn-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #374151;
-  color: #f9fafb;
-  border: 1px solid #4b5563;
-  border-radius: 9999px;
-  padding: 0.35rem 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  transition: all 0.1s ease;
-}
-
-.btn-top:active {
-  transform: translateY(1.5px);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.btn-top.btn-shift {
-  color: var(--shift-color);
-}
-
-.btn-top.btn-alpha {
-  color: var(--alpha-color);
-}
-
-/* ==========================================================================
-   Bàn Phím Khoa Học (Scientific Grid)
-   ========================================================================== */
-.sci-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0.4rem 0.35rem;
-  margin-bottom: 0.85rem;
-}
-
-.btn-sci-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.btn-label-sub {
-  font-size: 0.55rem;
-  font-weight: 700;
-  line-height: 0.85rem;
-  height: 0.85rem;
-  white-space: nowrap;
-}
-
-.label-shift {
-  color: var(--shift-color);
-}
-
-.label-alpha {
-  color: var(--alpha-color);
-}
-
-.btn-sci {
-  width: 100%;
-  height: 28px;
-  background: var(--btn-fn-bg);
-  color: var(--btn-fn-text);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  box-shadow: var(--btn-fn-shadow);
-  font-size: 0.725rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.08s ease;
-}
-
-.btn-sci:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #111827;
-}
-
-/* ==========================================================================
-   Bàn Phím Số & Phép Tính Cơ Bản (Numeric & Operations Keypad)
-   ========================================================================== */
-.numpad-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.55rem 0.45rem;
-}
-
-.btn-num-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.btn-pad {
-  width: 100%;
-  height: 38px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.08s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-pad:active {
-  transform: translateY(2px);
-}
-
-/* Number keys */
-.btn-digit {
-  background: var(--btn-num-bg);
-  color: var(--btn-num-text);
-  box-shadow: var(--btn-num-shadow);
-}
-
-.btn-digit:active {
-  box-shadow: 0 1px 0 #9ca3af;
-}
-
-/* DEL & AC */
-.btn-del {
-  background: var(--btn-del-bg);
-  color: var(--btn-del-text);
-  box-shadow: var(--btn-del-shadow);
-}
-
-.btn-del:active {
-  box-shadow: 0 1px 0 #9a3412;
-}
-
-.btn-ac {
-  background: var(--btn-ac-bg);
-  color: var(--btn-ac-text);
-  box-shadow: var(--btn-ac-shadow);
-}
-
-.btn-ac:active {
-  box-shadow: 0 1px 0 #c2410c;
-}
-
-/* Operators (+, -, *, /) */
-.btn-op {
-  background: var(--btn-fn-bg);
-  color: #ffffff;
-  box-shadow: var(--btn-fn-shadow);
-  font-size: 1.15rem;
-}
-
-.btn-op:active {
-  box-shadow: 0 1px 0 #111827;
-}
-
-/* Equals key (=) */
-.btn-equals {
-  background: linear-gradient(180deg, #4f46e5 0%, #3730a3 100%);
-  color: #ffffff;
-  box-shadow:
-    0 3px 0 #312e81,
-    0 4px 6px rgba(0, 0, 0, 0.3);
-  font-size: 1.25rem;
-}
-
-.btn-equals:active {
-  box-shadow: 0 1px 0 #312e81;
-}
-
-/* ==========================================================================
-   Badges & Result Cards
-   ========================================================================== */
-.badge-emerald {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-.badge-purple {
-  background-color: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
-}
-.badge-amber {
-  background-color: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-.badge-blue {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
-}
-.badge-rose {
-  background-color: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
-.badge-gray {
-  background-color: rgba(107, 114, 128, 0.15);
-  color: #9ca3af;
-  border: 1px solid rgba(107, 114, 128, 0.3);
-}
-.badge-sky {
-  background-color: rgba(14, 165, 233, 0.15);
-  color: #38bdf8;
-  border: 1px solid rgba(14, 165, 233, 0.3);
-}
-
-/* Animation utilities */
-@keyframes pulseSubtle {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.pulse-active {
-  animation: pulseSubtle 1.8s infinite ease-in-out;
-}
-
 /* Calcspace workspace */
 :root {
   --bg-app: #101411;
@@ -712,254 +191,6 @@ h1 em {
   font-size: 95px;
   font-family: Georgia, serif;
   line-height: 1;
-}
-.calculator-workspace {
-  display: grid;
-  grid-template-columns: minmax(200px, 1fr) minmax(330px, 410px) minmax(
-      220px,
-      1fr
-    );
-  gap: 40px;
-  align-items: start;
-  border-top: 1px solid var(--border-card);
-  padding-top: 32px;
-}
-.section-number {
-  font-size: 9px;
-  letter-spacing: 1.6px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-.workspace-intro {
-  padding-top: 12px;
-}
-.workspace-intro h2 {
-  font-size: 31px;
-  letter-spacing: -1px;
-  line-height: 1.22;
-  margin: 22px 0 15px;
-  font-weight: 500;
-}
-.workspace-intro > p {
-  font-size: 12px;
-  line-height: 1.9;
-  color: var(--text-muted);
-  max-width: 245px;
-}
-.feature-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 20px;
-}
-.feature-tags span {
-  font-size: 9px;
-  border: 1px solid var(--border-card);
-  color: var(--text-muted);
-  border-radius: 5px;
-  padding: 5px 8px;
-}
-.try-examples {
-  margin-top: 37px;
-}
-.try-examples h3 {
-  font-size: 9px;
-  letter-spacing: 1.2px;
-  color: var(--text-muted);
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-card);
-}
-.try-examples button {
-  position: relative;
-  display: block;
-  text-align: left;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--border-card);
-  padding: 15px 24px 15px 0;
-  color: var(--text-main);
-  cursor: pointer;
-}
-.try-examples button > span {
-  display: block;
-  font-size: 11px;
-  margin-bottom: 7px;
-}
-.try-examples code {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-.try-examples b {
-  position: absolute;
-  right: 0;
-  top: 22px;
-  font-size: 14px;
-  color: var(--text-muted);
-  font-weight: 400;
-}
-.try-examples button:hover code,
-.try-examples button:hover b {
-  color: var(--primary);
-}
-.privacy-note {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 28px;
-  color: var(--text-muted);
-}
-.privacy-note > span {
-  font-size: 21px;
-  color: var(--primary);
-}
-.privacy-note p {
-  font-size: 10px;
-  line-height: 1.8;
-}
-.calculator-stage {
-  padding: 15px 19px 17px;
-  background:
-    radial-gradient(ellipse at 50% 35%, #313e2555, transparent 70%),
-    var(--surface-card);
-  border: 1px solid var(--border-card);
-  border-radius: 20px;
-}
-.stage-label {
-  display: flex;
-  justify-content: space-between;
-  font: 8px monospace;
-  letter-spacing: 1.4px;
-  color: var(--text-muted);
-  margin: 0 2px 18px;
-}
-.casio-body {
-  max-width: 370px;
-  padding: 20px 17px 24px;
-  background: linear-gradient(150deg, #363c36, #242a25 65%, #1e241f);
-  border: 1px solid #535d4c;
-  border-radius: 20px 20px 29px 29px;
-  box-shadow:
-    0 18px 30px #0006,
-    inset 0 1px 1px #fff2;
-}
-.casio-model {
-  color: #c9d7b9;
-  font-size: 11px;
-}
-.casio-brand {
-  font-size: 17px;
-}
-.casio-subtext {
-  font-size: 8px;
-  color: #9ba68e;
-  margin: 13px 0 9px;
-}
-.casio-screen-bezel {
-  background: #171c17;
-  padding: 9px;
-  border-radius: 8px;
-  margin-bottom: 14px;
-}
-.casio-lcd {
-  background: #bdc9a8;
-  border-radius: 3px;
-  padding: 8px 10px;
-}
-.lcd-expression {
-  font-size: 14px;
-}
-.lcd-result {
-  font-size: 25px;
-  height: 39px;
-  line-height: 39px;
-}
-.top-controls {
-  margin-bottom: 10px;
-}
-.replay-pad {
-  width: 77px;
-  height: 77px;
-  background: radial-gradient(circle at 35% 35%, #4b5345, #262e24);
-  border-color: #3d4538;
-}
-.replay-center {
-  font-size: 7px;
-}
-.btn-top {
-  background: #3b4435;
-  border-color: #58614f;
-  font-size: 9px;
-  padding: 5px;
-}
-.btn-shift {
-  color: #d6d993 !important;
-}
-.btn-alpha {
-  color: #b8cc9d !important;
-}
-.btn-label-sub {
-  color: #c6c88d;
-  font-size: 7px;
-  height: 11px;
-  line-height: 11px;
-}
-.btn-sci {
-  background: linear-gradient(#454d40, #333b30);
-  font-size: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 0 #151c13;
-  height: 27px;
-}
-.sci-grid {
-  gap: 5px;
-  margin-bottom: 10px;
-}
-.numpad-grid {
-  gap: 7px 6px;
-}
-.btn-pad {
-  height: 35px;
-  font-size: 16px;
-  border-radius: 5px;
-}
-.btn-digit {
-  background: linear-gradient(#e5e8dc, #cbd0c2);
-  box-shadow: 0 3px 0 #7c8474;
-}
-.btn-op {
-  background: linear-gradient(#4a5342, #343d2e);
-  box-shadow: 0 3px 0 #192115;
-}
-.btn-del,
-.btn-ac {
-  background: linear-gradient(#cda985, #b38a66);
-  color: #241c14;
-  box-shadow: 0 3px 0 #725840;
-  font-size: 12px;
-}
-.btn-equals {
-  background: linear-gradient(#d3ef9d, #b8da7d);
-  color: #243016;
-  box-shadow: 0 3px 0 #6d8845;
-}
-.keyboard-hint {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  color: var(--text-muted);
-  font-size: 9px;
-  margin-top: 18px;
-}
-kbd {
-  font-family: inherit;
-  font-size: 8px;
-  border: 1px solid var(--border-card);
-  padding: 2px 4px;
-  border-radius: 3px;
 }
 .side-title {
   display: flex;
@@ -1198,9 +429,6 @@ html.light .daily-note > span,
 html.light .tool-icon {
   color: #527c20;
 }
-html.light .btn-label-sub {
-  color: #c6c88d;
-}
 section.hidden,
 #download-calc-tool.hidden {
   display: none !important;
@@ -1284,31 +512,6 @@ section.hidden,
     padding-top: 22px;
     gap: 24px;
   }
-  .workspace-intro {
-    padding: 0;
-  }
-  .workspace-intro h2 {
-    font-size: 23px;
-    margin: 12px 0;
-  }
-  .workspace-intro h2 br {
-    display: none;
-  }
-  .workspace-intro > p {
-    max-width: none;
-  }
-  .feature-tags {
-    margin-top: 12px;
-  }
-  .try-examples,
-  .privacy-note {
-    display: none;
-  }
-  .calculator-stage {
-    max-width: 410px;
-    width: 100%;
-    margin: auto;
-  }
   .workspace-side {
     grid-column: auto;
     display: block;
@@ -1338,8 +541,710 @@ section.hidden,
 }
 
 @media (max-width: 720px) {
-  .workspace-heading { margin-bottom: 20px; }
-  .workspace-heading p, .workspace-intro h2, .workspace-intro > p, .feature-tags { display: none; }
-  .calculator-workspace { padding-top: 18px; gap: 16px; }
-  .calculator-stage { padding: 12px 14px 14px; }
+  .workspace-heading {
+    margin-bottom: 20px;
+  }
+  .workspace-heading p {
+    display: none;
+  }
+  .calculator-workspace {
+    padding-top: 18px;
+    gap: 16px;
+  }
+}
+
+.badge-emerald {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-purple {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+.badge-amber {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-blue {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.badge-rose {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+.badge-gray {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #9ca3af;
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+.badge-sky {
+  background-color: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+/* Native formula editor */
+.calculator-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  align-items: start;
+  gap: 48px;
+  border-top: 1px solid var(--border-card);
+  padding-top: 32px;
+}
+.formula-workspace,
+.workspace-side {
+  min-width: 0;
+}
+.editor-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2px 0 25px;
+}
+.editor-heading h2 {
+  font-size: 29px;
+  line-height: 1.25;
+  letter-spacing: -1px;
+  font-weight: 450;
+  margin-top: 14px;
+}
+.editor-heading h2 br {
+  display: none;
+}
+.editor-symbol {
+  display: block;
+  color: var(--primary);
+  font:
+    italic 44px Georgia,
+    serif;
+  opacity: 0.6;
+  padding: 0 17px;
+}
+.editor-symbol span {
+  font-size: 26px;
+  margin-left: 5px;
+}
+.formula-card {
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  background: var(--surface-card);
+  padding: 24px 26px 20px;
+  box-shadow: 0 8px 32px #0000000d;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.formula-card:focus-within {
+  border-color: #718852;
+  box-shadow: 0 0 0 3px #c9f27a09;
+}
+.formula-topline,
+.result-topline,
+.formula-edit-actions,
+.formula-bottomline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.formula-topline label,
+#result-label {
+  font-size: 9px;
+  letter-spacing: 1.7px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.angle-switch {
+  display: flex;
+  gap: 3px;
+  border: 1px solid var(--border-card);
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--bg-app);
+}
+.angle-switch button {
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  font: 10px monospace;
+  cursor: pointer;
+}
+.angle-switch button[aria-pressed="true"] {
+  background: var(--primary);
+  color: #26371a;
+}
+#formula-input {
+  display: block;
+  resize: none;
+  width: 100%;
+  min-height: 100px;
+  max-height: 220px;
+  margin: 22px 0 8px;
+  padding: 5px 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font:
+    clamp(22px, 2.7vw, 34px) / 1.6 "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: -0.8px;
+  color: var(--text-main);
+  caret-color: var(--primary);
+  outline: none;
+  overflow-wrap: anywhere;
+}
+#formula-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.38;
+}
+#formula-input:focus-visible {
+  outline: none;
+}
+.formula-edit-actions {
+  padding-bottom: 20px;
+}
+#formula-help {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+#formula-clear {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 8px 0 8px 8px;
+}
+#formula-clear span {
+  font-size: 18px;
+}
+.formula-result-area {
+  border-top: 1px solid var(--border-card);
+  padding-top: 18px;
+}
+.result-actions {
+  display: flex;
+  gap: 8px;
+}
+.result-actions button {
+  background: transparent;
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 9px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.result-actions button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+.result-actions button[aria-pressed="true"] {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+#formula-result {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font:
+    clamp(34px, 4vw, 56px) / 1.3 "SFMono-Regular",
+    Consolas,
+    monospace;
+  font-weight: 450;
+  color: var(--primary);
+  margin: 19px 0 9px;
+  letter-spacing: -1.5px;
+  min-height: 73px;
+}
+#formula-status {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.8;
+  min-height: 20px;
+}
+.formula-bottomline {
+  border-top: 1px solid var(--border-card);
+  margin-top: 22px;
+  padding-top: 18px;
+}
+.formula-bottomline > span {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.formula-bottomline kbd {
+  margin-right: 5px;
+}
+.calculate-button {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  background: var(--primary);
+  color: #1e2d16;
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.calculate-button:hover {
+  background: var(--primary-hover);
+}
+.calculate-button > span {
+  font-size: 18px;
+  font-weight: 400;
+}
+.math-toolbox {
+  margin-top: 28px;
+}
+.toolbox-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 13px;
+  gap: 15px;
+}
+.toolbox-title h3 {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 550;
+  letter-spacing: 1.4px;
+}
+.toolbox-title > span {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+.math-key-row {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 7px;
+}
+.math-key-row button {
+  min-width: 0;
+  min-height: 44px;
+  background: var(--surface-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  font:
+    14px Georgia,
+    serif;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+.math-key-row button:hover {
+  background: #c9f27a12;
+  border-color: #78885a;
+}
+.math-key-row button:active {
+  transform: translateY(1px);
+}
+.math-key-row.operators button {
+  background: transparent;
+  font: 19px monospace;
+  color: var(--text-muted);
+}
+.more-functions {
+  border-bottom: 1px solid var(--border-card);
+  margin-top: 3px;
+}
+.more-functions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  padding: 13px 2px 15px;
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+}
+.more-functions summary::-webkit-details-marker {
+  display: none;
+}
+.more-functions summary > span {
+  font-size: 17px;
+}
+.more-functions[open] summary > span {
+  transform: rotate(45deg);
+}
+.more-functions .math-key-row {
+  padding-bottom: 10px;
+}
+.editor-examples {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+.editor-examples > span {
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+.editor-examples button {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 10px;
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  padding: 8px 11px;
+  cursor: pointer;
+}
+.editor-examples button span {
+  margin-left: 8px;
+  color: var(--primary);
+}
+.editor-examples button:hover {
+  color: var(--text-main);
+  border-color: #78885a;
+}
+.editor-privacy {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 9px;
+  margin-top: 23px;
+  line-height: 1.8;
+}
+.editor-privacy > span {
+  color: var(--primary);
+  font-size: 15px;
+}
+.has-error #formula-status {
+  color: #e7a197;
+}
+.has-error {
+  border-color: #955d54;
+}
+html.light #formula-result,
+html.light .editor-symbol,
+html.light .editor-examples button span,
+html.light .editor-privacy > span,
+html.light .result-actions button[aria-pressed="true"] {
+  color: #527c20;
+}
+html.light .has-error #formula-status {
+  color: #a23e32;
+}
+.recent-item strong {
+  overflow-wrap: anywhere;
+}
+.history-item {
+  gap: 16px;
+}
+.history-item > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1400px) {
+  .calculator-workspace {
+    gap: 60px;
+    grid-template-columns: minmax(0, 1fr) 310px;
+  }
+}
+@media (max-width: 1050px) {
+  .calculator-workspace {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 28px;
+  }
+  .workspace-side {
+    grid-column: auto;
+    display: block;
+  }
+  .quick-tools {
+    margin-top: 28px;
+  }
+  .editor-heading h2 {
+    font-size: 25px;
+  }
+  .editor-heading h2 br {
+    display: block;
+  }
+  .toolbox-title > span {
+    display: none;
+  }
+  .formula-card {
+    padding: 20px;
+  }
+}
+@media (max-width: 800px) {
+  .calculator-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .workspace-side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0 28px;
+  }
+  .side-title,
+  .recent-history {
+    grid-column: 1;
+  }
+  .quick-tools {
+    grid-column: 2;
+    grid-row: 1/3;
+    margin-top: 10px;
+  }
+  .editor-heading h2 br {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  main {
+    padding-top: 22px !important;
+  }
+  .workspace-heading {
+    margin-bottom: 19px;
+  }
+  h1 {
+    font-size: 34px;
+  }
+  .eyebrow {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+  .editor-heading {
+    margin-bottom: 16px;
+  }
+  .editor-heading h2 {
+    display: none;
+  }
+  .editor-symbol {
+    font-size: 25px;
+    line-height: 1;
+    padding: 0;
+  }
+  .editor-symbol span {
+    font-size: 18px;
+  }
+  .formula-card {
+    padding: 17px 16px 16px;
+    border-radius: 14px;
+  }
+  #formula-input {
+    font-size: 24px;
+    margin-top: 18px;
+  }
+  .formula-edit-actions {
+    padding-bottom: 13px;
+  }
+  #formula-help {
+    max-width: 210px;
+    font-size: 9px;
+    line-height: 1.7;
+  }
+  .formula-topline label {
+    font-size: 8px;
+    letter-spacing: 1.2px;
+  }
+  .angle-switch button {
+    padding: 5px 8px;
+  }
+  #result-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .result-actions {
+    gap: 5px;
+  }
+  .result-actions button {
+    font-size: 8px;
+    padding: 5px;
+  }
+  #formula-result {
+    font-size: 38px;
+    min-height: 50px;
+  }
+  .formula-bottomline {
+    margin-top: 16px;
+    padding-top: 14px;
+  }
+  .formula-bottomline > span {
+    font-size: 9px;
+  }
+  .calculate-button {
+    gap: 10px;
+    padding: 10px 11px;
+    font-size: 11px;
+  }
+  .math-toolbox {
+    margin-top: 21px;
+  }
+  .math-key-row {
+    gap: 5px;
+  }
+  .math-key-row button {
+    font-size: 12px;
+    border-radius: 6px;
+    min-height: 44px;
+  }
+  .math-key-row.operators button {
+    font-size: 18px;
+  }
+  .editor-examples {
+    gap: 6px;
+    margin-top: 18px;
+  }
+  .editor-examples > span {
+    width: 100%;
+    margin-bottom: 3px;
+  }
+  .editor-examples button {
+    font-size: 9px;
+    padding: 8px 9px;
+  }
+  .workspace-side {
+    display: block;
+  }
+  .quick-tools {
+    margin-top: 23px;
+  }
+  .editor-privacy {
+    font-size: 8px;
+  }
+}
+@media (max-width: 360px) {
+  .math-key-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .formula-topline {
+    gap: 6px;
+  }
+  .result-topline {
+    flex-wrap: wrap;
+  }
+}
+
+/* Keep the working area in view, including on smaller laptop screens. */
+.section-number {
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+kbd {
+  font-family: inherit;
+  font-size: 9px;
+  border: 1px solid var(--border-card);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+main {
+  padding-top: 34px !important;
+}
+.workspace-heading {
+  margin-bottom: 28px;
+}
+.workspace-heading h1 {
+  font-size: 46px;
+}
+.workspace-heading h1 br {
+  display: none;
+}
+.workspace-heading h1 em {
+  margin-left: 0.2em;
+}
+.workspace-heading p {
+  margin-top: 13px;
+}
+.calculator-workspace {
+  padding-top: 25px;
+}
+.editor-heading {
+  margin-bottom: 20px;
+}
+.editor-heading h2 {
+  font-size: 26px;
+  margin-top: 12px;
+}
+.formula-card {
+  padding-top: 20px;
+}
+#formula-input {
+  min-height: 80px;
+  font-size: 28px;
+  line-height: 1.6;
+  margin-top: 14px;
+  margin-bottom: 4px;
+}
+.formula-edit-actions {
+  padding-bottom: 12px;
+}
+.formula-result-area {
+  padding-top: 14px;
+}
+#formula-result {
+  min-height: 56px;
+  font-size: 46px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.formula-bottomline {
+  margin-top: 14px;
+  padding-top: 14px;
+}
+@media (max-width: 1050px) {
+  .workspace-heading h1 {
+    font-size: 40px;
+  }
+  .workspace-heading h1 br {
+    display: block;
+  }
+  .workspace-heading h1 em {
+    margin-left: 0;
+  }
+  .editor-heading h2 {
+    font-size: 24px;
+  }
+}
+@media (max-width: 720px) {
+  main {
+    padding-top: 22px !important;
+  }
+  .workspace-heading {
+    margin-bottom: 18px;
+  }
+  .workspace-heading h1 {
+    font-size: 34px;
+  }
+  .calculator-workspace {
+    padding-top: 18px;
+  }
+  .editor-heading {
+    margin-bottom: 14px;
+  }
+  .formula-card {
+    padding-top: 16px;
+  }
+  #formula-input {
+    font-size: 22px;
+    margin-top: 12px;
+  }
+  #formula-result {
+    font-size: 38px;
+    min-height: 48px;
+  }
 }

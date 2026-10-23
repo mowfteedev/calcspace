@@ -1,4 +1,4 @@
-const CACHE_NAME = "calcspace-v2";
+const CACHE_NAME = "calcspace-v3";
 const ASSETS = [
   "./",
   "./index.html",
