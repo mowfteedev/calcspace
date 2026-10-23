@@ -1,69 +1,95 @@
-const CACHE_NAME = "calcspace-v3";
+const RELEASE = "editor-20261023-2";
+const CACHE_NAME = `calcspace-${RELEASE}`;
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/utilities.css",
-  "./css/style.css",
-  "./js/audio.js",
-  "./js/calculator.js",
-  "./js/ip-calc.js",
-  "./js/converter.js",
-  "./js/app.js",
+  `./css/utilities.css?v=${RELEASE}`,
+  `./css/style.css?v=${RELEASE}`,
+  `./js/audio.js?v=${RELEASE}`,
+  `./js/calculator.js?v=${RELEASE}`,
+  `./js/ip-calc.js?v=${RELEASE}`,
+  `./js/converter.js?v=${RELEASE}`,
+  `./js/app.js?v=${RELEASE}`,
   "./manifest.json",
   "./icon.svg",
 ];
+const isAppCache = (name) =>
+  name.startsWith("calcspace-") || name.startsWith("fx570-");
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting()),
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      // Bypass HTTP cache as well as the previous service worker's Cache Storage.
+      await cache.addAll(
+        ASSETS.map((url) => new Request(url, { cache: "reload" })),
+      );
+      await self.skipWaiting();
+    })(),
   );
 });
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter(
-              (key) =>
-                (key.startsWith("calcspace-") || key.startsWith("fx570-")) &&
-                key !== CACHE_NAME,
-            )
-            .map((key) => caches.delete(key)),
-        ),
-      )
-      .then(() => self.clients.claim()),
+    (async () => {
+      const oldCaches = (await caches.keys()).filter(
+        (name) => isAppCache(name) && name !== CACHE_NAME,
+      );
+      await Promise.all(oldCaches.map((name) => caches.delete(name)));
+      await self.clients.claim();
+      // Legacy pages lack update listeners. Refresh them once when migrating their
+      // cache so an old HTML document cannot remain paired with new scripts.
+      if (oldCaches.length) {
+        const windows = await self.clients.matchAll({ type: "window" });
+        windows.forEach((client) => {
+          const url = new URL(client.url);
+          if (!url.href.startsWith(self.registration.scope)) return;
+          url.searchParams.set("v", RELEASE);
+          // Do not await navigation inside activate: its fetch waits for activation.
+          client.navigate(url.href).catch(() => {});
+        });
+      }
+    })(),
   );
 });
+
 self.addEventListener("fetch", (event) => {
+  const request = event.request;
   if (
-    event.request.method !== "GET" ||
-    new URL(event.request.url).origin !== self.location.origin
+    request.method !== "GET" ||
+    new URL(request.url).origin !== self.location.origin
   )
     return;
-  // Network first keeps deployments fresh; cached assets remain available offline.
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        // Navigation must revalidate HTML; versioned CSS/JS cannot reuse an old release.
+        const response = await fetch(
+          request,
+          request.mode === "navigate" ? { cache: "no-cache" } : undefined,
+        );
         if (response.ok) {
           const copy = response.clone();
-          event.waitUntil(
-            caches
-              .open(CACHE_NAME)
-              .then((cache) => cache.put(event.request, copy)),
-          );
+          event.waitUntil(cache.put(request, copy));
+          if (request.mode === "navigate") {
+            const indexCopy = response.clone();
+            event.waitUntil(
+              cache.put(
+                new URL("./index.html", self.registration.scope),
+                indexCopy,
+              ),
+            );
+          }
         }
         return response;
-      })
-      .catch(async () => {
-        const cached = await caches.match(event.request);
+      } catch {
+        const cached = await cache.match(request);
         if (cached) return cached;
-        if (event.request.mode === "navigate")
-          return caches.match("./index.html");
+        if (request.mode === "navigate")
+          return (await cache.match("./index.html")) || Response.error();
         return Response.error();
-      }),
+      }
+    })(),
   );
 });

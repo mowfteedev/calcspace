@@ -49,7 +49,7 @@ Node.js 18+ chỉ cần khi chạy kiểm tra tự động. Dự án không có 
 npm test
 ```
 
-`css/utilities.css` chứa các lớp tiện ích được biên dịch sẵn từ Tailwind CSS 3 (MIT); website không phụ thuộc vào trình biên dịch hoặc CDN. Khi mở rộng giao diện, thêm CSS vào `css/style.css` hoặc dùng các lớp đã có trong `utilities.css`. Khi thay đổi tài nguyên offline, tăng phiên bản `CACHE_NAME` trong `sw.js`.
+`css/utilities.css` chứa các lớp tiện ích được biên dịch sẵn từ Tailwind CSS 3 (MIT); website không phụ thuộc vào trình biên dịch hoặc CDN. Khi mở rộng giao diện, thêm CSS vào `css/style.css` hoặc dùng các lớp đã có trong `utilities.css`. Khi phát hành, đổi `RELEASE` trong `sw.js` và tham số `?v=` của CSS/JS trong `index.html` sang cùng một mã phiên bản. Service worker bỏ qua HTTP cache khi cài bản mới, xóa cache cũ của ứng dụng và làm mới trang một lần khi nâng cấp; lịch sử trong localStorage vẫn được giữ lại.
 
 - `index.html`: bố cục và các công cụ.
 - `js/calculator.js`: bộ phân tích biểu thức, trạng thái máy tính và lịch sử.
