@@ -1,6 +1,6 @@
 # Calcspace
 
-Một không gian tính toán bằng tiếng Việt: máy tính khoa học với ô nhập công thức và kết quả xem trước, bộ phân tích IPv4 subnet/CIDR và quy đổi đơn vị. Giao diện thích ứng với điện thoại, có chế độ sáng/tối, lịch sử trên thiết bị và hỗ trợ offline sau lần tải đầu tiên.
+Một không gian tính toán bằng tiếng Việt: máy tính khoa học với ô nhập công thức, bộ phân tích IPv4 subnet/CIDR và quy đổi đơn vị. Giao diện thích ứng với điện thoại, có chế độ sáng/tối, lịch sử trên thiết bị và hỗ trợ offline sau lần tải đầu tiên.
 
 ## Sử dụng
 
@@ -16,7 +16,7 @@ Sau đó mở `http://localhost:8080`. Toàn bộ tài nguyên là file tĩnh, t
 
 ## Tính năng
 
-- **Máy tính:** phép toán cơ bản, thứ tự ưu tiên, số mũ, căn bậc hai/ba, logarit, lượng giác và lượng giác ngược, DEG/RAD, giai thừa, phần trăm, π/e, Ans và phân số/thập phân. Nhập, dán hoặc chọn để sửa công thức trực tiếp; các nút hàm chèn tại con trỏ hoặc bao quanh đoạn đã chọn. Hỗ trợ Undo/Redo của trình duyệt. Xem trước không thay đổi Ans hoặc lưu lịch sử; nhấn Enter hay nút Tính kết quả để lưu. Hỗ trợ nhân ngầm như `2(3+4)`.
+- **Máy tính:** phép toán cơ bản, thứ tự ưu tiên, số mũ, căn bậc hai/ba, logarit, lượng giác và lượng giác ngược, DEG/RAD, giai thừa, phần trăm, π/e, Ans và phân số/thập phân. Nhập, dán hoặc chọn để sửa công thức trực tiếp; các nút hàm chèn tại con trỏ hoặc bao quanh đoạn đã chọn. Hỗ trợ Undo/Redo của trình duyệt. Kết quả chỉ xuất hiện và được lưu khi nhấn Enter hoặc nút Tính kết quả. Khi sửa công thức hoặc đổi DEG/RAD, kết quả cũ được ẩn để tránh nhầm lẫn. Hỗ trợ nhân ngầm như `2(3+4)`.
 - **Lịch sử:** lưu tối đa 50 phép tính ngay trên trình duyệt, xem nhanh ba phép tính gần nhất, chọn để sửa và tính lại. Alt + ↑/↓ duyệt lịch sử trong ô công thức. Các phép tính mới lưu kèm DEG/RAD và giá trị Ans tại thời điểm tính để có thể dùng lại chính xác.
 - **IPv4:** kiểm tra địa chỉ và CIDR nghiêm ngặt, network/broadcast, subnet/wildcard, host range, nhị phân, phân loại các dải phổ biến, sao chép nhanh. Hỗ trợ `/0`, `/31` và `/32`.
 - **Quy đổi:** dữ liệu thập phân/nhị phân, băng thông, độ dài, khối lượng, nhiệt độ và thời gian. Quy đổi hai chiều, hoán đổi đơn vị, bảng đối chiếu cập nhật trực tiếp và thời gian tải file.

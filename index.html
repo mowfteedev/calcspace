@@ -14,10 +14,10 @@
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#101411" />
 
-    <link rel="stylesheet" href="css/utilities.css?v=editor-20261023-2" />
+    <link rel="stylesheet" href="css/utilities.css?v=editor-20261023-3" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <!-- Local design system -->
-    <link rel="stylesheet" href="css/style.css?v=editor-20261023-2" />
+    <link rel="stylesheet" href="css/style.css?v=editor-20261023-3" />
   </head>
   <body
     class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white"
@@ -130,17 +130,11 @@
     >
       <div class="workspace-heading">
         <div>
-          <div class="eyebrow"><span></span> CÔNG CỤ NHỎ. KHẢ NĂNG LỚN.</div>
-          <h1>Mọi phép tính.<br /><em>Một không gian.</em></h1>
-          <p>
-            Từ bài toán hằng ngày đến những con số phức tạp.<br />Tập trung vào
-            ý tưởng, để việc tính toán cho Calcspace.
-          </p>
+          <div class="eyebrow"><span></span> KHÔNG GIAN TÍNH TOÁN</div>
+          <h1>Tính gọn.<em> Nghĩ xa.</em></h1>
+          <p>Một công thức, một đáp án rõ ràng.</p>
         </div>
-        <div class="heading-note">
-          <span class="orbit-mark">✳</span
-          ><span>Cho những bộ óc<br />luôn tò mò.</span>
-        </div>
+        <span class="workspace-caption">KHOA HỌC · MẠNG IP · QUY ĐỔI</span>
       </div>
 
       <!-- ==================================================================== -->
@@ -148,18 +142,6 @@
       <!-- ==================================================================== -->
       <section id="view-calc" class="calculator-workspace">
         <div class="formula-workspace">
-          <div class="editor-heading">
-            <div>
-              <div class="section-number">01 / MÁY TÍNH KHOA HỌC</div>
-              <h2>
-                Ý tưởng của bạn.<br />
-                Đáp án ở ngay đây.
-              </h2>
-            </div>
-            <span class="editor-symbol" aria-hidden="true"
-              >ƒ<span>x</span></span
-            >
-          </div>
           <form id="formula-form" class="formula-card" novalidate>
             <div class="formula-topline">
               <label for="formula-input">CÔNG THỨC CỦA BẠN</label>
@@ -205,9 +187,103 @@
                 Xóa <span aria-hidden="true">×</span>
               </button>
             </div>
-            <div class="formula-result-area">
+            <div class="math-toolbox" aria-label="Các nút toán học">
+              <div class="toolbox-title">
+                <h3>KÝ HIỆU & HÀM</h3>
+                <span>Chọn một hàm để chèn tại con trỏ</span>
+              </div>
+              <div
+                class="math-key-row operators"
+                role="group"
+                aria-label="Phép toán cơ bản"
+              >
+                <button data-insert="+" aria-label="Cộng">+</button
+                ><button data-insert="−" aria-label="Trừ">−</button
+                ><button data-insert="×" aria-label="Nhân">×</button
+                ><button data-insert="÷" aria-label="Chia">÷</button
+                ><button data-insert="(" aria-label="Mở ngoặc">(</button
+                ><button data-insert=")" aria-label="Đóng ngoặc">)</button
+                ><button data-insert="." aria-label="Dấu thập phân">.</button
+                ><button data-insert="%" aria-label="Phần trăm">%</button>
+              </div>
+              <div
+                class="math-key-row"
+                role="group"
+                aria-label="Lũy thừa và hằng số"
+              >
+                <button data-template="√({})" title="Căn bậc hai">√x</button
+                ><button
+                  data-template="({})²"
+                  data-empty="²"
+                  title="Bình phương"
+                >
+                  x²</button
+                ><button data-template="({})^" data-empty="^" title="Lũy thừa">
+                  xʸ</button
+                ><button
+                  data-template="({})/()"
+                  data-empty="()/()"
+                  data-fraction
+                  title="Phân số"
+                >
+                  a/b</button
+                ><button data-insert="π" title="Số pi">π</button
+                ><button data-insert="e" title="Hằng số Euler">e</button
+                ><button data-insert="Ans" title="Kết quả đã lưu gần nhất">
+                  Ans</button
+                ><button data-template="abs({})" title="Giá trị tuyệt đối">
+                  |x|
+                </button>
+              </div>
+              <div
+                class="math-key-row"
+                role="group"
+                aria-label="Logarit và lượng giác"
+              >
+                <button data-template="log({})" title="Logarit cơ số 10">
+                  log</button
+                ><button data-template="ln({})" title="Logarit tự nhiên">
+                  ln</button
+                ><button data-template="sin({})">sin</button
+                ><button data-template="cos({})">cos</button
+                ><button data-template="tan({})">tan</button
+                ><button data-template="sin⁻¹({})" title="Arcsin">sin⁻¹</button
+                ><button data-template="cos⁻¹({})" title="Arccos">cos⁻¹</button
+                ><button data-template="tan⁻¹({})" title="Arctan">tan⁻¹</button>
+              </div>
+              <details class="more-functions">
+                <summary>
+                  Thêm hàm toán học <span aria-hidden="true">+</span>
+                </summary>
+                <div class="math-key-row">
+                  <button data-template="∛({})" title="Căn bậc ba">∛x</button
+                  ><button
+                    data-template="({})!"
+                    data-empty="!"
+                    title="Giai thừa"
+                  >
+                    x!</button
+                  ><button data-template="10^({})" title="10 mũ x">10ˣ</button
+                  ><button data-template="e^({})" title="e mũ x">eˣ</button
+                  ><button data-template="sinh({})">sinh</button
+                  ><button data-template="cosh({})">cosh</button
+                  ><button data-template="tanh({})">tanh</button
+                  ><button data-insert="×10^" title="Ký hiệu khoa học">
+                    ×10ⁿ
+                  </button>
+                </div>
+              </details>
+            </div>
+            <div class="formula-bottomline">
+              <span><kbd>Enter</kbd> tính & lưu lịch sử</span
+              ><button type="submit" class="calculate-button">
+                Tính kết quả <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <p id="formula-status" role="status" hidden></p>
+            <div class="formula-result-area" id="formula-result-area" hidden>
               <div class="result-topline">
-                <span id="result-label">KẾT QUẢ XEM TRƯỚC</span>
+                <span id="result-label">KẾT QUẢ</span>
                 <div class="result-actions">
                   <button
                     type="button"
@@ -233,98 +309,10 @@
                 for="formula-input"
                 aria-live="polite"
                 aria-atomic="true"
-                >—</output
-              >
-              <div id="formula-status" role="status">
-                Một công thức nhỏ, khởi đầu cho một ý tưởng lớn.
-              </div>
-            </div>
-            <div class="formula-bottomline">
-              <span><kbd>Enter</kbd> tính & lưu lịch sử</span
-              ><button type="submit" class="calculate-button">
-                Tính kết quả <span aria-hidden="true">↗</span>
-              </button>
+              ></output>
+              <p class="result-caption">Đã lưu vào lịch sử.</p>
             </div>
           </form>
-          <div class="math-toolbox" aria-label="Các nút toán học">
-            <div class="toolbox-title">
-              <h3>MỘT CHÚT TRỢ GIÚP</h3>
-              <span>Chọn một hàm để chèn tại con trỏ</span>
-            </div>
-            <div
-              class="math-key-row operators"
-              role="group"
-              aria-label="Phép toán cơ bản"
-            >
-              <button data-insert="+" aria-label="Cộng">+</button
-              ><button data-insert="−" aria-label="Trừ">−</button
-              ><button data-insert="×" aria-label="Nhân">×</button
-              ><button data-insert="÷" aria-label="Chia">÷</button
-              ><button data-insert="(" aria-label="Mở ngoặc">(</button
-              ><button data-insert=")" aria-label="Đóng ngoặc">)</button
-              ><button data-insert="." aria-label="Dấu thập phân">.</button
-              ><button data-insert="%" aria-label="Phần trăm">%</button>
-            </div>
-            <div
-              class="math-key-row"
-              role="group"
-              aria-label="Lũy thừa và hằng số"
-            >
-              <button data-template="√({})" title="Căn bậc hai">√x</button
-              ><button data-template="({})²" data-empty="²" title="Bình phương">
-                x²</button
-              ><button data-template="({})^" data-empty="^" title="Lũy thừa">
-                xʸ</button
-              ><button
-                data-template="({})/()"
-                data-empty="()/()"
-                data-fraction
-                title="Phân số"
-              >
-                a/b</button
-              ><button data-insert="π" title="Số pi">π</button
-              ><button data-insert="e" title="Hằng số Euler">e</button
-              ><button data-insert="Ans" title="Kết quả đã lưu gần nhất">
-                Ans</button
-              ><button data-template="abs({})" title="Giá trị tuyệt đối">
-                |x|
-              </button>
-            </div>
-            <div
-              class="math-key-row"
-              role="group"
-              aria-label="Logarit và lượng giác"
-            >
-              <button data-template="log({})" title="Logarit cơ số 10">
-                log</button
-              ><button data-template="ln({})" title="Logarit tự nhiên">
-                ln</button
-              ><button data-template="sin({})">sin</button
-              ><button data-template="cos({})">cos</button
-              ><button data-template="tan({})">tan</button
-              ><button data-template="sin⁻¹({})" title="Arcsin">sin⁻¹</button
-              ><button data-template="cos⁻¹({})" title="Arccos">cos⁻¹</button
-              ><button data-template="tan⁻¹({})" title="Arctan">tan⁻¹</button>
-            </div>
-            <details class="more-functions">
-              <summary>
-                Thêm hàm toán học <span aria-hidden="true">+</span>
-              </summary>
-              <div class="math-key-row">
-                <button data-template="∛({})" title="Căn bậc ba">∛x</button
-                ><button data-template="({})!" data-empty="!" title="Giai thừa">
-                  x!</button
-                ><button data-template="10^({})" title="10 mũ x">10ˣ</button
-                ><button data-template="e^({})" title="e mũ x">eˣ</button
-                ><button data-template="sinh({})">sinh</button
-                ><button data-template="cosh({})">cosh</button
-                ><button data-template="tanh({})">tanh</button
-                ><button data-insert="×10^" title="Ký hiệu khoa học">
-                  ×10ⁿ
-                </button>
-              </div>
-            </details>
-          </div>
           <div class="editor-examples">
             <span>THỬ NHANH</span
             ><button type="button" data-example="(125+75)×15%">
@@ -361,14 +349,6 @@
                 ><small>6 nhóm đơn vị thông dụng</small></span
               ><b>↗</b>
             </button>
-          </div>
-          <div class="daily-note">
-            <span>GÓC NHỎ KIẾN THỨC</span>
-            <p>1 GB ≠ 1 GiB</p>
-            <small
-              >1 GiB = 1.073.741.824 byte.<br />Khác biệt nhỏ, con số
-              lớn.</small
-            >
           </div>
         </aside>
       </section>
@@ -726,11 +706,11 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <!-- Scripts -->
-    <script src="js/audio.js?v=editor-20261023-2"></script>
-    <script src="js/calculator.js?v=editor-20261023-2"></script>
-    <script src="js/ip-calc.js?v=editor-20261023-2"></script>
-    <script src="js/converter.js?v=editor-20261023-2"></script>
-    <script src="js/app.js?v=editor-20261023-2"></script>
+    <script src="js/audio.js?v=editor-20261023-3"></script>
+    <script src="js/calculator.js?v=editor-20261023-3"></script>
+    <script src="js/ip-calc.js?v=editor-20261023-3"></script>
+    <script src="js/converter.js?v=editor-20261023-3"></script>
+    <script src="js/app.js?v=editor-20261023-3"></script>
 
     <!-- PWA Service Worker Registration -->
     <script>

@@ -1,4 +1,4 @@
-const RELEASE = "editor-20261023-2";
+const RELEASE = "editor-20261023-3";
 const CACHE_NAME = `calcspace-${RELEASE}`;
 const ASSETS = [
   "./",

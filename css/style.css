@@ -131,67 +131,6 @@ header button[id] {
   color: var(--text-muted) !important;
   border-radius: 9px !important;
 }
-main {
-  max-width: 1320px !important;
-  padding: 46px 36px 56px !important;
-  justify-content: flex-start !important;
-}
-.workspace-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 44px;
-}
-.eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 9px;
-  letter-spacing: 2.2px;
-  color: var(--text-muted);
-  font-weight: 600;
-  margin-bottom: 17px;
-}
-.eyebrow > span {
-  width: 6px;
-  height: 6px;
-  background: var(--primary);
-  border-radius: 50%;
-}
-h1 {
-  font-size: clamp(36px, 4.4vw, 60px);
-  font-weight: 550;
-  letter-spacing: -2.8px;
-  line-height: 1.1;
-  margin: 0;
-}
-h1 em {
-  color: var(--primary);
-  font-family: Georgia, serif;
-  font-weight: 400;
-}
-.workspace-heading p {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.9;
-  margin-top: 18px;
-}
-.heading-note {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  padding-right: 54px;
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.7;
-  transform: rotate(-7deg);
-}
-.orbit-mark {
-  color: var(--primary);
-  font-size: 95px;
-  font-family: Georgia, serif;
-  line-height: 1;
-}
 .side-title {
   display: flex;
   align-items: center;
@@ -307,28 +246,6 @@ h1 em {
   font-weight: 400;
   color: var(--text-muted);
 }
-.daily-note {
-  margin-top: 24px;
-  padding: 20px;
-  border-radius: 11px;
-  background: #c9f27a09;
-  border: 1px solid #c9f27a1c;
-}
-.daily-note > span {
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: var(--primary);
-}
-.daily-note p {
-  font-size: 25px;
-  letter-spacing: -1px;
-  margin: 11px 0;
-}
-.daily-note small {
-  color: var(--text-muted);
-  font-size: 10px;
-  line-height: 1.8;
-}
 .app-footer {
   max-width: 1320px;
   width: 100%;
@@ -425,7 +342,6 @@ html.light select {
 }
 html.light h1 em,
 html.light .brand-dot,
-html.light .daily-note > span,
 html.light .tool-icon {
   color: #527c20;
 }
@@ -433,126 +349,6 @@ section.hidden,
 #download-calc-tool.hidden {
   display: none !important;
 }
-@media (min-width: 1400px) {
-  main {
-    padding-top: 56px !important;
-  }
-  .calculator-workspace {
-    gap: 60px;
-  }
-}
-@media (max-width: 1050px) {
-  .calculator-workspace {
-    gap: 25px;
-    grid-template-columns: 1fr 370px;
-  }
-  .workspace-side {
-    grid-column: 1/-1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0 30px;
-  }
-  .side-title,
-  .recent-history {
-    grid-column: 1;
-  }
-  .quick-tools {
-    grid-column: 2;
-    grid-row: 1/3;
-    margin-top: 10px;
-  }
-  .daily-note {
-    display: none;
-  }
-  .heading-note {
-    padding-right: 10px;
-  }
-  header {
-    padding: 16px 24px !important;
-  }
-  .app-brand small {
-    display: none;
-  }
-}
-@media (max-width: 720px) {
-  header {
-    padding: 16px !important;
-  }
-  header > div {
-    flex-wrap: wrap;
-  }
-  header nav {
-    order: 3;
-    width: 100%;
-    margin-top: 12px;
-    justify-content: space-between;
-  }
-  .tab-btn {
-    padding: 9px 10px;
-    font-size: 11px;
-  }
-  main {
-    padding: 30px 18px 36px !important;
-  }
-  .workspace-heading {
-    margin-bottom: 27px;
-  }
-  h1 {
-    font-size: 42px;
-    letter-spacing: -2px;
-  }
-  .workspace-heading p {
-    font-size: 11px;
-  }
-  .heading-note {
-    display: none;
-  }
-  .calculator-workspace {
-    grid-template-columns: 1fr;
-    padding-top: 22px;
-    gap: 24px;
-  }
-  .workspace-side {
-    grid-column: auto;
-    display: block;
-  }
-  .quick-tools {
-    margin-top: 24px;
-  }
-  .app-footer {
-    padding: 20px 18px;
-    flex-direction: column;
-    gap: 9px;
-    line-height: 1.8;
-  }
-  #ip-results .flex.justify-between {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-@media (max-width: 720px) {
-  .workspace-heading {
-    margin-bottom: 20px;
-  }
-  .workspace-heading p {
-    display: none;
-  }
-  .calculator-workspace {
-    padding-top: 18px;
-    gap: 16px;
-  }
-}
-
 .badge-emerald {
   background-color: rgba(16, 185, 129, 0.15);
   color: #34d399;
@@ -589,240 +385,184 @@ section.hidden,
   border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
-/* Native formula editor */
+/* A compact workspace: formula, math keys, submit, then the answer. */
+header > div {
+  max-width: 1200px !important;
+}
+main {
+  max-width: 1200px !important;
+  padding: 36px 36px 44px !important;
+  justify-content: flex-start !important;
+}
+.workspace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.eyebrow > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+h1 {
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: -1.8px;
+  font-weight: 500;
+  margin: 0;
+}
+h1 em {
+  margin-left: 0.15em;
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: var(--primary);
+}
+.workspace-heading p {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 10px;
+}
+.workspace-caption {
+  color: var(--text-muted);
+  font: 9px monospace;
+  letter-spacing: 1.3px;
+  text-align: right;
+}
 .calculator-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 28px;
   align-items: start;
-  gap: 48px;
-  border-top: 1px solid var(--border-card);
-  padding-top: 32px;
 }
 .formula-workspace,
 .workspace-side {
   min-width: 0;
 }
-.editor-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 2px 0 25px;
-}
-.editor-heading h2 {
-  font-size: 29px;
-  line-height: 1.25;
-  letter-spacing: -1px;
-  font-weight: 450;
-  margin-top: 14px;
-}
-.editor-heading h2 br {
-  display: none;
-}
-.editor-symbol {
-  display: block;
-  color: var(--primary);
-  font:
-    italic 44px Georgia,
-    serif;
-  opacity: 0.6;
-  padding: 0 17px;
-}
-.editor-symbol span {
-  font-size: 26px;
-  margin-left: 5px;
-}
 .formula-card {
-  border: 1px solid var(--border-card);
-  border-radius: 20px;
+  padding: 23px;
   background: var(--surface-card);
-  padding: 24px 26px 20px;
-  box-shadow: 0 8px 32px #0000000d;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  border: 1px solid var(--border-card);
+  border-radius: 18px;
+  transition: border-color 0.15s;
 }
 .formula-card:focus-within {
-  border-color: #718852;
-  box-shadow: 0 0 0 3px #c9f27a09;
+  border-color: #6b8053;
 }
 .formula-topline,
-.result-topline,
 .formula-edit-actions,
-.formula-bottomline {
+.formula-bottomline,
+.result-topline {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 .formula-topline label,
 #result-label {
-  font-size: 9px;
-  letter-spacing: 1.7px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 1.4px;
   color: var(--text-muted);
 }
 .angle-switch {
   display: flex;
   gap: 3px;
-  border: 1px solid var(--border-card);
   padding: 3px;
+  border: 1px solid var(--border-card);
   border-radius: 8px;
   background: var(--bg-app);
 }
 .angle-switch button {
+  background: transparent;
   border: 0;
   border-radius: 5px;
-  background: transparent;
-  color: var(--text-muted);
-  padding: 5px 10px;
+  padding: 6px 10px;
   font: 10px monospace;
+  color: var(--text-muted);
   cursor: pointer;
 }
 .angle-switch button[aria-pressed="true"] {
   background: var(--primary);
-  color: #26371a;
+  color: #203215;
 }
 #formula-input {
+  width: 100%;
   display: block;
   resize: none;
-  width: 100%;
-  min-height: 100px;
+  min-height: 80px;
   max-height: 220px;
-  margin: 22px 0 8px;
-  padding: 5px 0;
+  margin-top: 18px;
+  padding: 6px 0;
+  color: var(--text-main);
   background: transparent;
   border: 0;
   border-radius: 0;
+  outline: none;
+  caret-color: var(--primary);
   font:
-    clamp(22px, 2.7vw, 34px) / 1.6 "SFMono-Regular",
+    28px/1.6 "SFMono-Regular",
     Consolas,
     monospace;
-  letter-spacing: -0.8px;
-  color: var(--text-main);
-  caret-color: var(--primary);
-  outline: none;
+  letter-spacing: -0.7px;
   overflow-wrap: anywhere;
 }
 #formula-input::placeholder {
   color: var(--text-muted);
-  opacity: 0.38;
+  opacity: 0.45;
 }
 #formula-input:focus-visible {
   outline: none;
 }
 .formula-edit-actions {
-  padding-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-card);
 }
 #formula-help {
-  font-size: 10px;
   color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.7;
 }
 #formula-clear {
   display: flex;
-  gap: 9px;
   align-items: center;
-  color: var(--text-muted);
-  background: transparent;
-  border: 0;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 8px 0 8px 8px;
-}
-#formula-clear span {
-  font-size: 18px;
-}
-.formula-result-area {
-  border-top: 1px solid var(--border-card);
-  padding-top: 18px;
-}
-.result-actions {
-  display: flex;
   gap: 8px;
-}
-.result-actions button {
-  background: transparent;
-  border: 1px solid var(--border-card);
-  border-radius: 6px;
-  padding: 5px 8px;
-  font-size: 9px;
+  background: none;
   color: var(--text-muted);
-  cursor: pointer;
-}
-.result-actions button:disabled {
-  cursor: default;
-  opacity: 0.35;
-}
-.result-actions button[aria-pressed="true"] {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-#formula-result {
-  display: block;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  font:
-    clamp(34px, 4vw, 56px) / 1.3 "SFMono-Regular",
-    Consolas,
-    monospace;
-  font-weight: 450;
-  color: var(--primary);
-  margin: 19px 0 9px;
-  letter-spacing: -1.5px;
-  min-height: 73px;
-}
-#formula-status {
-  color: var(--text-muted);
-  font-size: 10px;
-  line-height: 1.8;
-  min-height: 20px;
-}
-.formula-bottomline {
-  border-top: 1px solid var(--border-card);
-  margin-top: 22px;
-  padding-top: 18px;
-}
-.formula-bottomline > span {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-.formula-bottomline kbd {
-  margin-right: 5px;
-}
-.calculate-button {
-  display: flex;
-  gap: 22px;
-  align-items: center;
-  background: var(--primary);
-  color: #1e2d16;
-  padding: 12px 17px;
   border: 0;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11px;
+  padding: 8px 0 8px 12px;
   cursor: pointer;
 }
-.calculate-button:hover {
-  background: var(--primary-hover);
-}
-.calculate-button > span {
-  font-size: 18px;
-  font-weight: 400;
+#formula-clear > span {
+  font-size: 19px;
 }
 .math-toolbox {
-  margin-top: 28px;
+  margin-top: 17px;
 }
 .toolbox-title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 13px;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 .toolbox-title h3 {
   color: var(--text-muted);
   font-size: 9px;
-  font-weight: 550;
-  letter-spacing: 1.4px;
+  font-weight: 500;
+  letter-spacing: 1.3px;
 }
 .toolbox-title > span {
   color: var(--text-muted);
@@ -831,24 +571,23 @@ section.hidden,
 .math-key-row {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 7px;
-  margin-bottom: 7px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 .math-key-row button {
   min-width: 0;
   min-height: 44px;
-  background: var(--surface-card);
-  color: var(--text-main);
   border: 1px solid var(--border-card);
-  border-radius: 8px;
+  border-radius: 7px;
+  background: var(--bg-app);
+  color: var(--text-main);
   font:
     14px Georgia,
     serif;
   cursor: pointer;
   transition:
-    background 0.15s,
     border-color 0.15s,
-    transform 0.15s;
+    background 0.15s;
 }
 .math-key-row button:hover {
   background: #c9f27a12;
@@ -858,22 +597,22 @@ section.hidden,
   transform: translateY(1px);
 }
 .math-key-row.operators button {
-  background: transparent;
   font: 19px monospace;
   color: var(--text-muted);
+  background: transparent;
 }
 .more-functions {
-  border-bottom: 1px solid var(--border-card);
-  margin-top: 3px;
+  margin-top: 4px;
 }
 .more-functions summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  list-style: none;
-  padding: 13px 2px 15px;
-  color: var(--text-muted);
+  gap: 12px;
+  padding: 10px 1px;
   font-size: 10px;
+  color: var(--text-muted);
+  list-style: none;
   cursor: pointer;
 }
 .more-functions summary::-webkit-details-marker {
@@ -886,33 +625,124 @@ section.hidden,
   transform: rotate(45deg);
 }
 .more-functions .math-key-row {
-  padding-bottom: 10px;
+  margin-top: 6px;
+}
+.formula-bottomline {
+  padding-top: 16px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-card);
+}
+.formula-bottomline > span {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+kbd {
+  font-family: inherit;
+  font-size: 9px;
+  border: 1px solid var(--border-card);
+  padding: 3px 5px;
+  margin-right: 4px;
+  border-radius: 4px;
+}
+.calculate-button {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+  background: var(--primary);
+  color: #203215;
+  border: 0;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.calculate-button:hover {
+  background: var(--primary-hover);
+}
+.calculate-button > span {
+  font-size: 19px;
+  font-weight: 400;
+}
+.formula-result-area {
+  margin-top: 20px;
+  padding: 18px;
+  background: #c9f27a08;
+  border: 1px solid #c9f27a29;
+  border-radius: 10px;
+}
+#formula-result {
+  display: block;
+  min-width: 0;
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+  color: var(--primary);
+  font:
+    44px/1.3 "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: -1.5px;
+}
+.result-actions {
+  display: flex;
+  gap: 7px;
+}
+.result-actions button {
+  padding: 6px 8px;
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 10px;
+  cursor: pointer;
+}
+.result-actions button[aria-pressed="true"] {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.result-caption {
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+#formula-status {
+  margin-top: 16px;
+  color: #e7a197;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.has-error {
+  border-color: #955d54;
+}
+[hidden] {
+  display: none !important;
 }
 .editor-examples {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
-  margin-top: 22px;
+  gap: 7px;
+  align-items: center;
+  margin-top: 17px;
 }
 .editor-examples > span {
-  font-size: 8px;
-  letter-spacing: 1.4px;
+  margin-right: 6px;
   color: var(--text-muted);
-  margin-right: 8px;
+  font-size: 8px;
+  letter-spacing: 1.2px;
 }
 .editor-examples button {
-  background: transparent;
   color: var(--text-muted);
-  font-size: 10px;
+  background: transparent;
   border: 1px solid var(--border-card);
-  border-radius: 20px;
-  padding: 8px 11px;
+  border-radius: 18px;
+  padding: 8px 10px;
+  font-size: 10px;
   cursor: pointer;
 }
 .editor-examples button span {
-  margin-left: 8px;
   color: var(--primary);
+  margin-left: 5px;
 }
 .editor-examples button:hover {
   color: var(--text-main);
@@ -924,31 +754,44 @@ section.hidden,
   align-items: center;
   color: var(--text-muted);
   font-size: 9px;
-  margin-top: 23px;
   line-height: 1.8;
+  margin-top: 18px;
 }
 .editor-privacy > span {
   color: var(--primary);
   font-size: 15px;
 }
-.has-error #formula-status {
-  color: #e7a197;
+.workspace-side {
+  padding: 18px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
 }
-.has-error {
-  border-color: #955d54;
+.side-title {
+  padding-top: 0;
+  padding-bottom: 14px;
 }
-html.light #formula-result,
-html.light .editor-symbol,
-html.light .editor-examples button span,
-html.light .editor-privacy > span,
-html.light .result-actions button[aria-pressed="true"] {
-  color: #527c20;
+.section-number {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.3px;
 }
-html.light .has-error #formula-status {
-  color: #a23e32;
+.recent-empty {
+  margin-top: 15px;
+  padding: 22px 6px;
 }
 .recent-item strong {
   overflow-wrap: anywhere;
+}
+.quick-tools {
+  margin-top: 25px;
+}
+.quick-tools button {
+  background: var(--bg-app);
+}
+.quick-tools > .section-number {
+  line-height: 1.8;
 }
 .history-item {
   gap: 16px;
@@ -957,46 +800,51 @@ html.light .has-error #formula-status {
   min-width: 0;
   overflow-wrap: anywhere;
 }
-@media (min-width: 1400px) {
-  .calculator-workspace {
-    gap: 60px;
-    grid-template-columns: minmax(0, 1fr) 310px;
-  }
+.app-footer {
+  max-width: 1200px;
+}
+html.light #formula-result,
+html.light .editor-examples button span,
+html.light .editor-privacy > span,
+html.light .result-actions button[aria-pressed="true"] {
+  color: #527c20;
+}
+html.light #formula-status {
+  color: #a23e32;
+}
+html.light .formula-result-area {
+  border-color: #c6d9aa;
+  background: #f5f9ee;
 }
 @media (max-width: 1050px) {
+  header {
+    padding: 16px 24px !important;
+  }
+  .app-brand small {
+    display: none;
+  }
+  .workspace-caption {
+    display: none;
+  }
   .calculator-workspace {
     grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 28px;
-  }
-  .workspace-side {
-    grid-column: auto;
-    display: block;
-  }
-  .quick-tools {
-    margin-top: 28px;
-  }
-  .editor-heading h2 {
-    font-size: 25px;
-  }
-  .editor-heading h2 br {
-    display: block;
-  }
-  .toolbox-title > span {
-    display: none;
+    gap: 22px;
   }
   .formula-card {
     padding: 20px;
+  }
+  .workspace-side {
+    padding: 15px;
   }
 }
 @media (max-width: 800px) {
   .calculator-workspace {
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
   }
   .workspace-side {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 0 28px;
+    column-gap: 24px;
   }
   .side-title,
   .recent-history {
@@ -1005,93 +853,63 @@ html.light .has-error #formula-status {
   .quick-tools {
     grid-column: 2;
     grid-row: 1/3;
-    margin-top: 10px;
-  }
-  .editor-heading h2 br {
-    display: none;
+    margin-top: 0;
   }
 }
 @media (max-width: 720px) {
+  header {
+    padding: 16px !important;
+  }
+  header > div {
+    flex-wrap: wrap;
+  }
+  header nav {
+    order: 3;
+    width: 100%;
+    margin-top: 12px;
+    justify-content: space-between;
+  }
+  .tab-btn {
+    font-size: 11px;
+    padding: 9px 10px;
+  }
   main {
-    padding-top: 22px !important;
+    padding: 25px 18px 32px !important;
   }
   .workspace-heading {
-    margin-bottom: 19px;
+    margin-bottom: 22px;
   }
   h1 {
     font-size: 34px;
   }
-  .eyebrow {
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
-  }
-  .editor-heading {
-    margin-bottom: 16px;
-  }
-  .editor-heading h2 {
-    display: none;
-  }
-  .editor-symbol {
-    font-size: 25px;
-    line-height: 1;
-    padding: 0;
-  }
-  .editor-symbol span {
-    font-size: 18px;
-  }
-  .formula-card {
-    padding: 17px 16px 16px;
-    border-radius: 14px;
-  }
-  #formula-input {
-    font-size: 24px;
-    margin-top: 18px;
-  }
-  .formula-edit-actions {
-    padding-bottom: 13px;
-  }
-  #formula-help {
-    max-width: 210px;
-    font-size: 9px;
-    line-height: 1.7;
-  }
-  .formula-topline label {
-    font-size: 8px;
-    letter-spacing: 1.2px;
-  }
-  .angle-switch button {
-    padding: 5px 8px;
-  }
-  #result-label {
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
-  .result-actions {
-    gap: 5px;
-  }
-  .result-actions button {
-    font-size: 8px;
-    padding: 5px;
-  }
-  #formula-result {
-    font-size: 38px;
-    min-height: 50px;
-  }
-  .formula-bottomline {
-    margin-top: 16px;
-    padding-top: 14px;
-  }
-  .formula-bottomline > span {
-    font-size: 9px;
-  }
-  .calculate-button {
-    gap: 10px;
-    padding: 10px 11px;
+  .workspace-heading p {
     font-size: 11px;
   }
+  .eyebrow {
+    font-size: 8px;
+    margin-bottom: 10px;
+  }
+  .formula-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+  .formula-topline label {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  #formula-input {
+    font-size: 23px;
+    margin-top: 12px;
+  }
+  #formula-help {
+    font-size: 9px;
+    max-width: 205px;
+  }
+  .toolbox-title > span {
+    display: none;
+  }
   .math-toolbox {
-    margin-top: 21px;
+    margin-top: 15px;
   }
   .math-key-row {
     gap: 5px;
@@ -1099,152 +917,84 @@ html.light .has-error #formula-status {
   .math-key-row button {
     font-size: 12px;
     border-radius: 6px;
-    min-height: 44px;
   }
-  .math-key-row.operators button {
-    font-size: 18px;
+  .formula-bottomline > span {
+    font-size: 9px;
+  }
+  .calculate-button {
+    padding: 10px 12px;
+    gap: 12px;
+    font-size: 11px;
+  }
+  .formula-result-area {
+    padding: 13px;
+  }
+  #formula-result {
+    font-size: 36px;
+  }
+  .result-topline {
+    gap: 6px;
+  }
+  #result-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .result-actions {
+    gap: 5px;
+  }
+  .result-actions button {
+    font-size: 9px;
+    padding: 5px;
   }
   .editor-examples {
     gap: 6px;
-    margin-top: 18px;
   }
   .editor-examples > span {
     width: 100%;
-    margin-bottom: 3px;
   }
   .editor-examples button {
     font-size: 9px;
-    padding: 8px 9px;
+  }
+  .editor-privacy {
+    font-size: 8px;
   }
   .workspace-side {
     display: block;
   }
   .quick-tools {
-    margin-top: 23px;
+    margin-top: 22px;
   }
-  .editor-privacy {
-    font-size: 8px;
+  .app-footer {
+    padding: 20px 18px;
+    flex-direction: column;
+    gap: 9px;
+    line-height: 1.8;
+  }
+  #ip-results .flex.justify-between {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }
 @media (max-width: 360px) {
+  h1 {
+    font-size: 30px;
+  }
   .math-key-row {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .formula-topline {
-    gap: 6px;
+    gap: 5px;
   }
   .result-topline {
     flex-wrap: wrap;
   }
 }
-
-/* Keep the working area in view, including on smaller laptop screens. */
-.section-number {
-  font-size: 9px;
-  letter-spacing: 1.6px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-kbd {
-  font-family: inherit;
-  font-size: 9px;
-  border: 1px solid var(--border-card);
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-main {
-  padding-top: 34px !important;
-}
-.workspace-heading {
-  margin-bottom: 28px;
-}
-.workspace-heading h1 {
-  font-size: 46px;
-}
-.workspace-heading h1 br {
-  display: none;
-}
-.workspace-heading h1 em {
-  margin-left: 0.2em;
-}
-.workspace-heading p {
-  margin-top: 13px;
-}
-.calculator-workspace {
-  padding-top: 25px;
-}
-.editor-heading {
-  margin-bottom: 20px;
-}
-.editor-heading h2 {
-  font-size: 26px;
-  margin-top: 12px;
-}
-.formula-card {
-  padding-top: 20px;
-}
-#formula-input {
-  min-height: 80px;
-  font-size: 28px;
-  line-height: 1.6;
-  margin-top: 14px;
-  margin-bottom: 4px;
-}
-.formula-edit-actions {
-  padding-bottom: 12px;
-}
-.formula-result-area {
-  padding-top: 14px;
-}
-#formula-result {
-  min-height: 56px;
-  font-size: 46px;
-  margin-top: 12px;
-  margin-bottom: 4px;
-}
-.formula-bottomline {
-  margin-top: 14px;
-  padding-top: 14px;
-}
-@media (max-width: 1050px) {
-  .workspace-heading h1 {
-    font-size: 40px;
-  }
-  .workspace-heading h1 br {
-    display: block;
-  }
-  .workspace-heading h1 em {
-    margin-left: 0;
-  }
-  .editor-heading h2 {
-    font-size: 24px;
-  }
-}
-@media (max-width: 720px) {
-  main {
-    padding-top: 22px !important;
-  }
-  .workspace-heading {
-    margin-bottom: 18px;
-  }
-  .workspace-heading h1 {
-    font-size: 34px;
-  }
-  .calculator-workspace {
-    padding-top: 18px;
-  }
-  .editor-heading {
-    margin-bottom: 14px;
-  }
-  .formula-card {
-    padding-top: 16px;
-  }
-  #formula-input {
-    font-size: 22px;
-    margin-top: 12px;
-  }
-  #formula-result {
-    font-size: 38px;
-    min-height: 48px;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }

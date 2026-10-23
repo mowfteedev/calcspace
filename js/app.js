@@ -68,12 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const formulaStatus = document.getElementById("formula-status");
   const fractionButton = document.getElementById("fraction-toggle");
   const copyResultButton = document.getElementById("copy-result");
-  let previewValue = null;
+  let resultValue = null;
   let displayFraction = false;
-  let committed = false;
   let historyCursor = -1;
   let draftExpression = "";
-  let lastCommit = "";
 
   // ----------------------------------------------------
   // Tab Switching
@@ -162,7 +160,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Formula editor: the native textarea owns selection, undo, paste and IME.
-  function updateScreen(showError = false) {
+  function renderResult() {
+    document.getElementById("formula-result-area").hidden =
+      resultValue === null;
+    const fraction =
+      displayFraction && resultValue !== null
+        ? window.casioCalc.toFraction(resultValue)
+        : null;
+    formulaResult.textContent =
+      resultValue === null
+        ? ""
+        : fraction
+          ? `${fraction.num}/${fraction.den}`
+          : window.casioCalc.formatNumber(resultValue);
+    fractionButton.disabled = resultValue === null;
+    fractionButton.setAttribute("aria-pressed", String(displayFraction));
+    copyResultButton.disabled = resultValue === null;
+  }
+
+  function updateScreen() {
     const calc = window.casioCalc;
     if (formulaInput.value !== calc.expression)
       formulaInput.value = calc.expression;
@@ -177,61 +193,23 @@ document.addEventListener("DOMContentLoaded", () => {
           String(button.dataset.angle === calc.angleMode),
         ),
       );
-    const savedPreview = previewValue;
-    previewValue = null;
-    let message = "Một công thức nhỏ, khởi đầu cho một ý tưởng lớn.";
-    let output = "—";
-    let invalid = false;
-    if (calc.expression.trim()) {
-      try {
-        const value =
-          committed && savedPreview !== null
-            ? savedPreview
-            : calc.evaluateValue(calc.expression);
-        if (!Number.isFinite(value)) {
-          invalid = true;
-          message =
-            "Phép tính không có kết quả thực hữu hạn. Kiểm tra miền xác định hoặc phép chia cho 0.";
-        } else {
-          previewValue = value;
-          output = calc.formatNumber(value);
-          if (displayFraction) {
-            const fraction = calc.toFraction(value);
-            if (fraction) output = `${fraction.num}/${fraction.den}`;
-          }
-          message = committed
-            ? "Đã lưu vào lịch sử. Bạn có thể tiếp tục sửa công thức."
-            : "Xem trước trực tiếp · Nhấn Enter để lưu kết quả.";
-        }
-      } catch {
-        invalid = showError;
-        message = showError
-          ? "Công thức chưa hợp lệ. Kiểm tra dấu ngoặc, tên hàm và các phép toán."
-          : "Tiếp tục nhập công thức…";
-      }
-    }
-    formulaResult.textContent = output;
-    formulaStatus.textContent = message;
-    formulaInput.setAttribute("aria-invalid", String(invalid));
-    document
-      .getElementById("formula-form")
-      .classList.toggle("has-error", invalid);
-    document.getElementById("result-label").textContent =
-      committed && previewValue !== null
-        ? "KẾT QUẢ CỦA BẠN"
-        : "KẾT QUẢ XEM TRƯỚC";
-    fractionButton.disabled = previewValue === null;
-    fractionButton.setAttribute("aria-pressed", String(displayFraction));
-    copyResultButton.disabled = previewValue === null;
+    renderResult();
     renderRecentHistory();
+  }
+
+  function resetResult() {
+    resultValue = null;
+    displayFraction = false;
+    formulaStatus.hidden = true;
+    formulaStatus.textContent = "";
+    formulaInput.setAttribute("aria-invalid", "false");
+    document.getElementById("formula-form").classList.remove("has-error");
   }
 
   function changed() {
     window.casioCalc.expression = formulaInput.value;
     window.casioCalc.isResultDisplayed = false;
-    committed = false;
-    displayFraction = false;
-    lastCommit = "";
+    resetResult();
     historyCursor = -1;
     updateScreen();
   }
@@ -333,52 +311,49 @@ document.addEventListener("DOMContentLoaded", () => {
         formulaInput.focus();
         return;
       }
-      updateScreen(true);
-      if (previewValue === null) {
+      // Editing and choosing tools never evaluates a formula. Only submit does.
+      if (resultValue !== null) return;
+      const calc = window.casioCalc;
+      let value;
+      let error = "";
+      try {
+        value = calc.evaluateValue(calc.expression);
+        if (!Number.isFinite(value))
+          error =
+            "Phép tính không có kết quả thực hữu hạn. Kiểm tra miền xác định hoặc phép chia cho 0.";
+      } catch {
+        error =
+          "Công thức chưa hợp lệ. Kiểm tra dấu ngoặc, tên hàm và các phép toán.";
+      }
+      if (error) {
+        formulaStatus.textContent = error;
+        formulaStatus.hidden = false;
+        formulaInput.setAttribute("aria-invalid", "true");
+        document.getElementById("formula-form").classList.add("has-error");
         formulaInput.focus();
         return;
       }
-      const calc = window.casioCalc;
-      const key = JSON.stringify([
-        calc.expression,
-        calc.angleMode,
-        previewValue,
-      ]);
-      if (key !== lastCommit) {
-        // Commit the exact preview before Ans changes, keeping preview and saved result identical.
-        calc.rawResult = previewValue;
-        calc.result = calc.formatNumber(previewValue);
-        calc.addHistory(calc.expression, calc.result, { ans: calc.ans });
-        calc.ans = previewValue;
-        lastCommit = key;
-      }
-      committed = true;
-      document.getElementById("result-label").textContent = "KẾT QUẢ CỦA BẠN";
-      formulaStatus.textContent =
-        "Đã lưu vào lịch sử. Bạn có thể tiếp tục sửa công thức.";
-      renderRecentHistory();
+      resetResult();
+      resultValue = value;
+      calc.rawResult = value;
+      calc.result = calc.formatNumber(value);
+      calc.addHistory(calc.expression, calc.result, { ans: calc.ans });
+      calc.ans = value;
+      updateScreen();
       window.soundEngine.playBeep();
     });
   document.querySelectorAll("[data-angle]").forEach((button) =>
     button.addEventListener("click", () => {
+      if (window.casioCalc.angleMode === button.dataset.angle) return;
       window.casioCalc.angleMode = button.dataset.angle;
-      committed = false;
-      lastCommit = "";
+      resetResult();
       updateScreen();
     }),
   );
   fractionButton.addEventListener("click", () => {
+    if (resultValue === null) return;
     displayFraction = !displayFraction;
-    // Render the current value without resolving Ans again after a commit.
-    if (previewValue !== null) {
-      const fraction = displayFraction
-        ? window.casioCalc.toFraction(previewValue)
-        : null;
-      formulaResult.textContent = fraction
-        ? `${fraction.num}/${fraction.den}`
-        : window.casioCalc.formatNumber(previewValue);
-      fractionButton.setAttribute("aria-pressed", String(displayFraction));
-    }
+    renderResult();
   });
   copyResultButton.addEventListener("click", async () => {
     try {
