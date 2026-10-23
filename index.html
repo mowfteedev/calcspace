@@ -1,540 +1,1111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi" class="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Casio fx-570VN PLUS & SysAdmin Toolkit</title>
-  <meta name="description" content="Máy tính khoa học Casio fx-570VN PLUS trực tuyến kết hợp bộ tính toán mạng IP CIDR Subnet và quy đổi đơn vị chuyên dụng cho SysAdmin / NetEng.">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e293b">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Calcspace — Máy tính & bộ công cụ của bạn</title>
+    <meta
+      name="description"
+      content="Máy tính khoa học Casio fx-570VN PLUS trực tuyến kết hợp bộ tính toán mạng IP CIDR Subnet và quy đổi đơn vị chuyên dụng cho SysAdmin / NetEng."
+    />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#101411" />
 
-  <!-- Tailwind CSS CDN for utility grid and layout -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            }
-          }
-        }
-      }
-    }
-  </script>
+    <link rel="stylesheet" href="css/utilities.css" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <!-- Custom Casio fx-570 Stylesheet -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body
+    class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white"
+  >
+    <!-- Top Navigation Bar -->
+    <header
+      class="w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-2.5"
+    >
+      <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
+        <a href="./" class="app-brand" aria-label="Calcspace — Trang chủ"
+          ><span class="brand-icon">c<span>+</span></span
+          ><span
+            >calcspace<span class="brand-dot">.</span
+            ><small>KHÔNG GIAN TÍNH TOÁN</small></span
+          ></a
+        >
 
-  <!-- Custom Casio fx-570 Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+        <!-- Quick Switcher Tabs -->
+        <nav
+          class="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1 scrollbar-none"
+          role="tablist"
+        >
+          <button
+            class="tab-btn active"
+            data-tab="calc"
+            role="tab"
+            aria-selected="true"
+          >
+            <span aria-hidden="true">⌗</span>
+            <span class="whitespace-nowrap">Máy tính</span>
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="ip"
+            role="tab"
+            aria-selected="false"
+          >
+            <span aria-hidden="true">◎</span>
+            <span class="whitespace-nowrap">Mạng IP</span>
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="conv"
+            role="tab"
+            aria-selected="false"
+          >
+            <span aria-hidden="true">⇄</span>
+            <span class="whitespace-nowrap">Quy Đổi</span>
+          </button>
+          <button
+            class="tab-btn"
+            data-tab="history"
+            role="tab"
+            aria-selected="false"
+          >
+            <span aria-hidden="true">↺</span>
+            <span class="whitespace-nowrap">Lịch Sử</span>
+          </button>
+        </nav>
 
-  <!-- Top Navigation Bar -->
-  <header class="w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-2.5">
-    <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
-      <!-- Logo / Brand -->
-      <div class="flex items-center gap-2">
-        <span class="text-xl">🖩</span>
-        <div class="leading-tight">
-          <span class="font-extrabold tracking-wider text-sm sm:text-base bg-gradient-to-r from-blue-400 via-indigo-300 to-amber-300 bg-clip-text text-transparent">fx-570VN PLUS</span>
-          <span class="hidden md:inline-block ml-1 text-xs px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60 font-mono">Toolkit</span>
-        </div>
-      </div>
-
-      <!-- Quick Switcher Tabs -->
-      <nav class="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1 scrollbar-none" role="tablist">
-        <button class="tab-btn active" data-tab="calc" role="tab" aria-selected="true">
-          <span>🖩</span>
-          <span class="whitespace-nowrap">fx-570</span>
-        </button>
-        <button class="tab-btn" data-tab="ip" role="tab" aria-selected="false">
-          <span>🌐</span>
-          <span class="whitespace-nowrap">Mạng IP</span>
-        </button>
-        <button class="tab-btn" data-tab="conv" role="tab" aria-selected="false">
-          <span>⚖️</span>
-          <span class="whitespace-nowrap">Quy Đổi</span>
-        </button>
-        <button class="tab-btn" data-tab="history" role="tab" aria-selected="false">
-          <span>📜</span>
-          <span class="whitespace-nowrap">Lịch Sử</span>
-        </button>
-      </nav>
-
-      <!-- Utility Controls -->
-      <div class="flex items-center gap-2">
-        <button id="btn-sound-toggle" class="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors flex items-center gap-1.5" title="Bật/Tắt âm thanh phím">
-          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-          <span class="hidden sm:inline">Âm thanh</span>
-        </button>
-        <button id="btn-theme-toggle" class="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors flex items-center gap-1.5" title="Đổi giao diện Sáng / Tối">
-          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-          <span class="hidden sm:inline">Sáng</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content Body -->
-  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
-
-    <!-- ==================================================================== -->
-    <!-- VIEW 1: CASIO fx-570VN PLUS CALCULATOR                              -->
-    <!-- ==================================================================== -->
-    <section id="view-calc" class="w-full flex flex-col items-center">
-      <div class="casio-body">
-        <!-- Brand Header -->
-        <div class="casio-header">
-          <span class="casio-brand">CASIO</span>
-          <div class="text-right">
-            <span class="casio-model">fx-570VN PLUS</span>
-            <div class="text-[9px] tracking-wider text-slate-400 font-mono">NATURAL-V.P.A.M.</div>
-          </div>
-        </div>
-
-        <div class="casio-subtext">TWO WAY POWER • 417 FUNCTIONS</div>
-
-        <!-- LCD Screen Bezel -->
-        <div class="casio-screen-bezel">
-          <div class="casio-lcd">
-            <!-- Indicators Row -->
-            <div class="lcd-indicators">
-              <span id="ind-shift" class="opacity-15 font-bold text-amber-900">S</span>
-              <span id="ind-alpha" class="opacity-15 font-bold text-rose-900">A</span>
-              <span id="ind-mem" class="opacity-15 font-bold">M</span>
-              <span id="ind-angle" class="font-bold">D</span>
-              <span id="ind-math" class="font-bold ml-auto">Math ▲▼</span>
-            </div>
-
-            <!-- Calculation Expression (Top Line) -->
-            <div id="lcd-expression" class="lcd-expression"> </div>
-
-            <!-- Result (Bottom Line) -->
-            <div id="lcd-result" class="lcd-result">0</div>
-          </div>
-        </div>
-
-        <!-- Top Controls & Replay Pad -->
-        <div class="top-controls">
-          <!-- Left Column (Shift, Alpha) -->
-          <div class="side-fn-col">
-            <button class="btn-top btn-shift calc-btn" data-action="shift">
-              <span>SHIFT</span>
-            </button>
-            <button class="btn-top btn-alpha calc-btn" data-action="alpha">
-              <span>ALPHA</span>
-            </button>
-          </div>
-
-          <!-- Circular REPLAY D-Pad -->
-          <div class="replay-pad">
-            <button class="replay-btn replay-up calc-btn" data-action="replay-up" title="Xem lịch sử trước">▲</button>
-            <button class="replay-btn replay-left calc-btn" data-action="replay-left" title="Con trỏ trái">◀</button>
-            <div class="replay-center">REPLAY</div>
-            <button class="replay-btn replay-right calc-btn" data-action="replay-right" title="Con trỏ phải">▶</button>
-            <button class="replay-btn replay-down calc-btn" data-action="replay-down" title="Xem lịch sử sau">▼</button>
-          </div>
-
-          <!-- Right Column (Mode Setup, On) -->
-          <div class="side-fn-col">
-            <button class="btn-top calc-btn" data-action="mode" title="Menu chế độ: COMP, IP-NET, CONV, BASE-N">
-              <span>MODE</span>
-            </button>
-            <button class="btn-top calc-btn" data-action="on" title="Bật / Xóa sạch">
-              <span>ON</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Scientific Function Keys Grid (3 rows x 6 cols) -->
-        <div class="sci-grid">
-          <!-- Row 1 -->
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">d/c</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val="/" title="Phân số">■/□</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">∛</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="√(" title="Căn bậc 2">√</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">x³</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val="²" title="Bình phương">x²</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">x√</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val="^" title="Lũy thừa">x^□</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">10^x</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="log(" title="Logarit cơ số 10">log</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">e^x</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="ln(" title="Logarit tự nhiên">ln</button>
-          </div>
-
-          <!-- Row 2 -->
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">A</span>
-            <button class="btn-sci calc-btn" data-action="pm" title="Đảo dấu âm">(-)</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">B</span>
-            <button class="btn-sci calc-btn" data-action="angle" title="Đổi Độ / Radian">° ' "</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">C</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="abs(" title="Giá trị tuyệt đối">hyp</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">sin⁻¹</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="sin(" title="Sin">sin</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">cos⁻¹</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="cos(" title="Cos">cos</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">tan⁻¹</span>
-            <button class="btn-sci calc-btn" data-action="fn" data-val="tan(" title="Tan">tan</button>
-          </div>
-
-          <!-- Row 3 -->
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">STO</span>
-            <button class="btn-sci calc-btn" data-action="ans" title="Recall Ans">RCL</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">←</span>
-            <button class="btn-sci calc-btn" data-action="exp" title="Kỹ thuật">ENG</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">%</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val="(" title="Mở ngoặc">(</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">,</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val=")" title="Đóng ngoặc">)</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift font-bold">a b/c</span>
-            <button class="btn-sci calc-btn" data-action="sd" title="Chuyển Phân số ↔ Thập phân">S⇔D</button>
-          </div>
-          <div class="btn-sci-wrap">
-            <span class="btn-label-sub label-shift">M-</span>
-            <button class="btn-sci calc-btn" data-action="op" data-val="+" title="Thêm vào bộ nhớ">M+</button>
-          </div>
-        </div>
-
-        <!-- Numeric & Basic Operations Keypad (4 rows x 5 cols) -->
-        <div class="numpad-grid">
-          <!-- Row 1: 7, 8, 9, DEL, AC -->
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">CONST</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="7">7</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">CONV</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="8">8</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">CLR</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="9">9</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">INS</span>
-            <button class="btn-pad btn-del calc-btn" data-action="del" title="Xóa ký tự cuối">DEL</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">OFF</span>
-            <button class="btn-pad btn-ac calc-btn" data-action="ac" title="Xóa toàn bộ">AC</button>
-          </div>
-
-          <!-- Row 2: 4, 5, 6, *, / -->
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">MATRIX</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="4">4</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">VECTOR</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="5">5</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">BASE</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="6">6</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">nPr</span>
-            <button class="btn-pad btn-op calc-btn" data-action="op" data-val="×">×</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">nCr</span>
-            <button class="btn-pad btn-op calc-btn" data-action="op" data-val="÷">÷</button>
-          </div>
-
-          <!-- Row 3: 1, 2, 3, +, - -->
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">STAT</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="1">1</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">CMPLX</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="2">2</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">BASE</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="3">3</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">Pol</span>
-            <button class="btn-pad btn-op calc-btn" data-action="op" data-val="+">+</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">Rec</span>
-            <button class="btn-pad btn-op calc-btn" data-action="op" data-val="-">-</button>
-          </div>
-
-          <!-- Row 4: 0, ., *10^x, Ans, = -->
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">Rnd</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="num" data-val="0">0</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">Ran#</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="dot" data-val=".">•</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">π / e</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="exp">×10^x</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift">%</span>
-            <button class="btn-pad btn-digit calc-btn" data-action="ans">Ans</button>
-          </div>
-          <div class="btn-num-wrap">
-            <span class="btn-label-sub label-shift font-bold">≈</span>
-            <button class="btn-pad btn-equals calc-btn" data-action="equals">=</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Keyboard shortcuts guide -->
-      <div class="mt-4 text-center text-xs text-slate-500 max-w-md">
-        <span class="font-medium text-slate-400">Phím tắt bàn phím:</span> Numpad (0-9, +, -, *, /), Enter (=), Backspace (DEL), Esc (AC), Shift (SHIFT), Alt/A (ALPHA), S (sin), C (cos), T (tan), L (log), D (S⇔D), M (MODE).
-      </div>
-    </section>
-
-    <!-- ==================================================================== -->
-    <!-- VIEW 2: IP SUBNET & CIDR CALCULATOR                                 -->
-    <!-- ==================================================================== -->
-    <section id="view-ip" class="w-full hidden space-y-6">
-      <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
-          <div>
-            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-              <span class="text-indigo-400">🌐</span> Bộ Tính Toán Mạng IPv4 Subnet & CIDR
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Phân tích Network ID, Broadcast, Subnet Mask, Host khả dụng và RFC 1918 / RFC 5737.</p>
-          </div>
-
-          <!-- Quick Presets -->
-          <div class="flex flex-wrap items-center gap-1.5">
-            <span class="text-xs text-slate-500 mr-1">Mẫu nhanh:</span>
-            <button class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700" data-ip="192.168.1.150/26">/26 LAN</button>
-            <button class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700" data-ip="10.0.0.1/16">10.0/16</button>
-            <button class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700" data-ip="100.64.0.1/10">CGNAT</button>
-            <button class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700" data-ip="192.0.2.1/24">RFC 5737</button>
-          </div>
-        </div>
-
-        <!-- Input Form -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mt-5">
-          <div class="sm:col-span-6">
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Địa chỉ IPv4 (hoặc IP kèm CIDR)</label>
-            <input type="text" id="ip-input" value="192.168.1.150/26" placeholder="ví dụ: 192.168.1.150/26" class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-          </div>
-
-          <div class="sm:col-span-4">
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Prefix CIDR / Subnet Mask</label>
-            <select id="ip-prefix-select" class="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-              <!-- Populated by JS -->
-            </select>
-          </div>
-
-          <div class="sm:col-span-2 flex items-end">
-            <button id="ip-calc-btn" class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-1.5">
-              <span>Tính ngay</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- IP Calculation Results Area -->
-        <div id="ip-results" class="mt-6">
-          <!-- Dynamically populated by JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================================== -->
-    <!-- VIEW 3: UNIT CONVERTER                                               -->
-    <!-- ==================================================================== -->
-    <section id="view-conv" class="w-full hidden space-y-6">
-      <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl">
-        <div class="pb-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-              <span class="text-amber-400">⚖️</span> Bộ Quy Đổi Đơn Vị Chuyên Dụng
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Dung lượng dữ liệu, Tốc độ mạng, Độ dài, Khối lượng, Nhiệt độ và Thời gian.</p>
-          </div>
-
-          <!-- Category Selector -->
-          <div class="w-full sm:w-64">
-            <select id="conv-category" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option value="storage">💾 Dung lượng Dữ liệu (B, KB, MB, GB, KiB...)</option>
-              <option value="speed">⚡ Tốc độ Truyền / Băng thông (Mbps, MB/s...)</option>
-              <option value="length">📏 Độ dài (m, km, inch, ft, mile...)</option>
-              <option value="weight">⚖️ Khối lượng (kg, g, lb, oz, tấn...)</option>
-              <option value="temperature">🌡️ Nhiệt độ (°C, °F, K)</option>
-              <option value="time">⏱️ Thời gian (s, min, h, day...)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- 2-Way Conversion Inputs -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center mt-6">
-          <!-- Input A -->
-          <div class="md:col-span-2 space-y-2">
-            <label class="text-xs font-semibold text-slate-400">Giá trị đầu vào</label>
-            <input type="number" id="conv-from-val" value="10" step="any" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 text-lg font-mono font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <select id="conv-from-unit" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm font-medium">
-              <!-- JS Populated -->
-            </select>
-          </div>
-
-          <!-- Arrow Switch Icon -->
-          <div class="md:col-span-1 flex justify-center py-2">
-            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400 shadow-md">
-              ⇄
-            </div>
-          </div>
-
-          <!-- Input B -->
-          <div class="md:col-span-2 space-y-2">
-            <label class="text-xs font-semibold text-slate-400">Kết quả quy đổi</label>
-            <input type="number" id="conv-to-val" step="any" class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 text-lg font-mono font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <select id="conv-to-unit" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm font-medium">
-              <!-- JS Populated -->
-            </select>
-          </div>
-        </div>
-
-        <!-- Download Time Estimation Tool (shown only when category is Speed) -->
-        <div id="download-calc-tool" class="hidden mt-6 p-4 rounded-2xl bg-indigo-950/30 border border-indigo-800/50">
-          <div class="text-xs uppercase font-bold text-indigo-400 tracking-wider mb-2">⚡ Tính Nhanh: Thời Gian Tải File Qua Băng Thông Mạng</div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
-            <div>
-              <label class="text-xs text-slate-400 block mb-1">Dung lượng file</label>
-              <div class="flex gap-2">
-                <input type="number" id="dl-size" value="10" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-mono">
-                <select id="dl-size-unit" class="px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs">
-                  <option value="GB" selected>GB</option>
-                  <option value="MB">MB</option>
-                  <option value="TB">TB</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <label class="text-xs text-slate-400 block mb-1">Tốc độ mạng tải xuống</label>
-              <div class="flex gap-2">
-                <input type="number" id="dl-speed" value="100" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-mono">
-                <select id="dl-speed-unit" class="px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs">
-                  <option value="Mbps" selected>Mbps</option>
-                  <option value="Gbps">Gbps</option>
-                  <option value="MBps">MB/s</option>
-                </select>
-              </div>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center">
-              <span class="text-xs text-slate-500 block">Thời gian ước tính:</span>
-              <span id="dl-result" class="text-base font-bold font-mono text-emerald-400">13 phút 39 giây</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Comparison Reference Table -->
-        <div class="mt-6">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Bảng Đối Chiếu Nhanh Tất Cả Đơn Vị</h3>
-          <div class="overflow-x-auto rounded-xl border border-slate-800">
-            <table class="w-full text-left">
-              <thead class="bg-slate-950 text-xs text-slate-400 border-b border-slate-800 font-semibold">
-                <tr>
-                  <th class="py-2.5 px-3">Đơn Vị</th>
-                  <th class="py-2.5 px-3 text-right">Giá Trị Tương Đương</th>
-                </tr>
-              </thead>
-              <tbody id="conv-quick-table">
-                <!-- JS populated -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================================== -->
-    <!-- VIEW 4: CALCULATION HISTORY                                         -->
-    <!-- ==================================================================== -->
-    <section id="view-history" class="w-full hidden space-y-4">
-      <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-          <div>
-            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-              <span class="text-indigo-400">📜</span> Lịch Sử Tính Toán Máy Tính fx-570
-            </h2>
-            <p class="text-xs text-slate-400 mt-0.5">Click vào bất kỳ phép tính nào để nạp lại vào máy tính.</p>
-          </div>
-          <button id="history-clear-btn" class="px-3 py-1.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors">
-            Xóa lịch sử
+        <!-- Utility Controls -->
+        <div class="flex items-center gap-2">
+          <button
+            id="btn-sound-toggle"
+            class="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors flex items-center gap-1.5"
+            title="Bật/Tắt âm thanh phím"
+          >
+            <svg
+              class="w-4 h-4 text-emerald-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+              ></path>
+            </svg>
+            <span class="hidden sm:inline">Âm thanh</span>
+          </button>
+          <button
+            id="btn-theme-toggle"
+            class="p-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors flex items-center gap-1.5"
+            title="Đổi giao diện Sáng / Tối"
+          >
+            <svg
+              class="w-4 h-4 text-amber-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <span class="hidden sm:inline">Sáng</span>
           </button>
         </div>
+      </div>
+    </header>
 
-        <div id="history-list" class="mt-4 space-y-2 max-h-[60vh] overflow-y-auto pr-1">
-          <!-- Populated by JS -->
+    <!-- Main Content Body -->
+    <main
+      class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center"
+    >
+      <div class="workspace-heading">
+        <div>
+          <div class="eyebrow"><span></span> CÔNG CỤ NHỎ. KHẢ NĂNG LỚN.</div>
+          <h1>Mọi phép tính.<br /><em>Một không gian.</em></h1>
+          <p>
+            Từ bài toán hằng ngày đến những con số phức tạp.<br />Tập trung vào
+            ý tưởng, để việc tính toán cho Calcspace.
+          </p>
+        </div>
+        <div class="heading-note">
+          <span class="orbit-mark">✳</span
+          ><span>Cho những bộ óc<br />luôn tò mò.</span>
         </div>
       </div>
-    </section>
-  </main>
 
-  <!-- Footer -->
-  <footer class="w-full py-4 text-center text-xs text-slate-500 border-t border-slate-800/60 mt-auto">
-    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div>Casio fx-570VN PLUS Simulator & SysAdmin Toolkit</div>
-      <div class="font-mono text-slate-400">Arch Linux • 100% Client-Side • PWA Ready</div>
-    </div>
-  </footer>
+      <!-- ==================================================================== -->
+      <!-- VIEW 1: CASIO fx-570VN PLUS CALCULATOR                              -->
+      <!-- ==================================================================== -->
+      <section id="view-calc" class="calculator-workspace">
+        <aside class="workspace-intro">
+          <div class="section-number">01 / MÁY TÍNH KHOA HỌC</div>
+          <h2>
+            Quen thuộc.<br />
+            Nhưng tiện hơn.
+          </h2>
+          <p>
+            Cảm giác của một chiếc máy tính cầm tay, với sự tiện lợi ngay trên
+            trình duyệt.
+          </p>
+          <div class="feature-tags">
+            <span>DEG / RAD</span><span>Phân số</span><span>Lượng giác</span>
+          </div>
+          <div class="try-examples">
+            <h3>THỬ MỘT PHÉP TÍNH <span>↘</span></h3>
+            <button data-example="(125+75)×15%">
+              <span>15% của 200</span><code>(125 + 75) × 15%</code
+              ><b>↗</b></button
+            ><button data-example="sin(30)²+cos(30)²">
+              <span>Một chút lượng giác</span><code>sin²(30) + cos²(30)</code
+              ><b>↗</b></button
+            ><button data-example="1/3+1/6">
+              <span>Chuyện của phân số</span><code>⅓ + ⅙</code><b>↗</b>
+            </button>
+          </div>
+          <div class="privacy-note">
+            <span>◈</span>
+            <p>
+              Tính toán ngay trên thiết bị.<br />Dữ liệu của bạn ở lại với bạn.
+            </p>
+          </div>
+        </aside>
+        <div class="calculator-stage">
+          <div class="stage-label">
+            <span>THE CLASSIC, REIMAGINED</span><span>fx–570</span>
+          </div>
+          <div class="casio-body">
+            <!-- Brand Header -->
+            <div class="casio-header">
+              <span class="casio-brand">CASIO</span>
+              <div class="text-right">
+                <span class="casio-model">fx-570VN PLUS</span>
+                <div class="text-[9px] tracking-wider text-slate-400 font-mono">
+                  NATURAL-V.P.A.M.
+                </div>
+              </div>
+            </div>
 
-  <!-- Scripts -->
-  <script src="js/audio.js"></script>
-  <script src="js/calculator.js"></script>
-  <script src="js/ip-calc.js"></script>
-  <script src="js/converter.js"></script>
-  <script src="js/app.js"></script>
+            <div class="casio-subtext">SCIENTIFIC CALCULATOR • WEB EDITION</div>
 
-  <!-- PWA Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => {
-          console.log('SW registration note:', err);
+            <!-- LCD Screen Bezel -->
+            <div class="casio-screen-bezel">
+              <div class="casio-lcd">
+                <!-- Indicators Row -->
+                <div class="lcd-indicators">
+                  <span
+                    id="ind-shift"
+                    class="opacity-15 font-bold text-amber-900"
+                    >S</span
+                  >
+                  <span
+                    id="ind-alpha"
+                    class="opacity-15 font-bold text-rose-900"
+                  >
+                  </span>
+                  <span id="ind-mem" class="opacity-15 font-bold">M</span>
+                  <span id="ind-angle" class="font-bold">D</span>
+                  <span id="ind-math" class="font-bold ml-auto">Math ▲▼</span>
+                </div>
+
+                <!-- Calculation Expression (Top Line) -->
+                <div id="lcd-expression" class="lcd-expression"></div>
+
+                <!-- Result (Bottom Line) -->
+                <div id="lcd-result" aria-live="polite" class="lcd-result">
+                  0
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Controls & Replay Pad -->
+            <div class="top-controls">
+              <!-- Left Column (Shift, Alpha) -->
+              <div class="side-fn-col">
+                <button class="btn-top btn-shift calc-btn" data-action="shift">
+                  <span>SHIFT</span>
+                </button>
+                <button
+                  class="btn-top btn-alpha calc-btn"
+                  data-action="constant"
+                  title="Nhập π; SHIFT để nhập e"
+                >
+                  <span>π / e</span>
+                </button>
+              </div>
+
+              <!-- Circular REPLAY D-Pad -->
+              <div class="replay-pad">
+                <button
+                  class="replay-btn replay-up calc-btn"
+                  data-action="replay-up"
+                  title="Xem lịch sử trước"
+                >
+                  ▲
+                </button>
+                <button
+                  class="replay-btn replay-left calc-btn"
+                  data-action="replay-left"
+                  title="Con trỏ trái"
+                >
+                  ◀
+                </button>
+                <div class="replay-center">REPLAY</div>
+                <button
+                  class="replay-btn replay-right calc-btn"
+                  data-action="replay-right"
+                  title="Con trỏ phải"
+                >
+                  ▶
+                </button>
+                <button
+                  class="replay-btn replay-down calc-btn"
+                  data-action="replay-down"
+                  title="Xem lịch sử sau"
+                >
+                  ▼
+                </button>
+              </div>
+
+              <!-- Right Column (Mode Setup, On) -->
+              <div class="side-fn-col">
+                <button
+                  class="btn-top calc-btn"
+                  data-action="mode"
+                  title="Menu: Máy tính, Mạng IP, Quy đổi, Lịch sử"
+                >
+                  <span>MODE</span>
+                </button>
+                <button
+                  class="btn-top calc-btn"
+                  data-action="on"
+                  title="Bật / Xóa sạch"
+                >
+                  <span>ON</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Scientific Function Keys Grid (3 rows x 6 cols) -->
+            <div class="sci-grid">
+              <!-- Row 1 -->
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="op"
+                  data-val="/"
+                  title="Phân số"
+                >
+                  ■/□
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">∛</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="√("
+                  title="Căn bậc 2"
+                >
+                  √
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">x³</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="op"
+                  data-val="²"
+                  title="Bình phương"
+                >
+                  x²
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="op"
+                  data-val="^"
+                  title="Lũy thừa"
+                >
+                  x^□
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">10^x</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="log("
+                  title="Logarit cơ số 10"
+                >
+                  log
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">e^x</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="ln("
+                  title="Logarit tự nhiên"
+                >
+                  ln
+                </button>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="pm"
+                  title="Đảo dấu âm"
+                >
+                  (-)
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="angle"
+                  title="Đổi Độ / Radian"
+                >
+                  ° ' "
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="abs("
+                  title="Giá trị tuyệt đối"
+                >
+                  abs
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">sin⁻¹</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="sin("
+                  title="Sin"
+                >
+                  sin
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">cos⁻¹</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="cos("
+                  title="Cos"
+                >
+                  cos
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">tan⁻¹</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="fn"
+                  data-val="tan("
+                  title="Tan"
+                >
+                  tan
+                </button>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="recall"
+                  title="Đọc bộ nhớ M; SHIFT để xóa bộ nhớ"
+                >
+                  RCL
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="exp"
+                  title="Nhập lũy thừa 10"
+                >
+                  EXP
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">%</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="op"
+                  data-val="("
+                  title="Mở ngoặc"
+                >
+                  (
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="op"
+                  data-val=")"
+                  title="Đóng ngoặc"
+                >
+                  )
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift font-bold"> </span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="sd"
+                  title="Chuyển Phân số ↔ Thập phân"
+                >
+                  S⇔D
+                </button>
+              </div>
+              <div class="btn-sci-wrap">
+                <span class="btn-label-sub label-shift">M-</span>
+                <button
+                  class="btn-sci calc-btn"
+                  data-action="memory"
+                  title="Thêm vào bộ nhớ"
+                >
+                  M+
+                </button>
+              </div>
+            </div>
+
+            <!-- Numeric & Basic Operations Keypad (4 rows x 5 cols) -->
+            <div class="numpad-grid">
+              <!-- Row 1: 7, 8, 9, DEL, AC -->
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="7"
+                >
+                  7
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="8"
+                >
+                  8
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="9"
+                >
+                  9
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-del calc-btn"
+                  data-action="del"
+                  title="Xóa ký tự cuối"
+                >
+                  DEL
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-ac calc-btn"
+                  data-action="ac"
+                  title="Xóa toàn bộ"
+                >
+                  AC
+                </button>
+              </div>
+
+              <!-- Row 2: 4, 5, 6, *, / -->
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="4"
+                >
+                  4
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="5"
+                >
+                  5
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="6"
+                >
+                  6
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-op calc-btn"
+                  data-action="op"
+                  data-val="×"
+                >
+                  ×
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-op calc-btn"
+                  data-action="op"
+                  data-val="÷"
+                >
+                  ÷
+                </button>
+              </div>
+
+              <!-- Row 3: 1, 2, 3, +, - -->
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="1"
+                >
+                  1
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="2"
+                >
+                  2
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="3"
+                >
+                  3
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-op calc-btn"
+                  data-action="op"
+                  data-val="+"
+                >
+                  +
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-op calc-btn"
+                  data-action="op"
+                  data-val="-"
+                >
+                  -
+                </button>
+              </div>
+
+              <!-- Row 4: 0, ., *10^x, Ans, = -->
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="num"
+                  data-val="0"
+                >
+                  0
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift"> </span>
+                <button
+                  class="btn-pad btn-digit calc-btn"
+                  data-action="dot"
+                  data-val="."
+                >
+                  •
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift">π</span>
+                <button class="btn-pad btn-digit calc-btn" data-action="exp">
+                  ×10^x
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift">%</span>
+                <button class="btn-pad btn-digit calc-btn" data-action="ans">
+                  Ans
+                </button>
+              </div>
+              <div class="btn-num-wrap">
+                <span class="btn-label-sub label-shift font-bold">≈</span>
+                <button
+                  class="btn-pad btn-equals calc-btn"
+                  data-action="equals"
+                >
+                  =
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="keyboard-hint">
+            <kbd>Enter</kbd> tính kết quả <span>·</span> <kbd>Esc</kbd> xóa tất
+            cả
+          </div>
+        </div>
+        <aside class="workspace-side">
+          <div class="side-title">
+            <h3>Gần đây</h3>
+            <button id="show-all-history">Xem tất cả ↗</button>
+          </div>
+          <div id="recent-history" class="recent-history"></div>
+          <div class="quick-tools">
+            <div class="section-number">THÊM MỘT CHÚT TIỆN ÍCH</div>
+            <button data-open-tab="ip">
+              <span class="tool-icon">◎</span
+              ><span
+                ><strong>Mạng IPv4</strong
+                ><small>Subnet, CIDR & dải host</small></span
+              ><b>↗</b></button
+            ><button data-open-tab="conv">
+              <span class="tool-icon">⇄</span
+              ><span
+                ><strong>Quy đổi đơn vị</strong
+                ><small>6 nhóm đơn vị thông dụng</small></span
+              ><b>↗</b>
+            </button>
+          </div>
+          <div class="daily-note">
+            <span>GÓC NHỎ KIẾN THỨC</span>
+            <p>1 GB ≠ 1 GiB</p>
+            <small
+              >1 GiB = 1.073.741.824 byte.<br />Khác biệt nhỏ, con số
+              lớn.</small
+            >
+          </div>
+        </aside>
+      </section>
+
+      <!-- ==================================================================== -->
+      <!-- VIEW 2: IP SUBNET & CIDR CALCULATOR                                 -->
+      <!-- ==================================================================== -->
+      <section id="view-ip" class="w-full hidden space-y-6">
+        <div
+          class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3"
+          >
+            <div>
+              <h2
+                class="text-xl font-bold text-slate-100 flex items-center gap-2"
+              >
+                <span class="text-indigo-400">🌐</span> Bộ Tính Toán Mạng IPv4
+                Subnet & CIDR
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Phân tích Network ID, Broadcast, Subnet Mask, Host khả dụng và
+                RFC 1918 / RFC 5737.
+              </p>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-xs text-slate-500 mr-1">Mẫu nhanh:</span>
+              <button
+                class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700"
+                data-ip="192.168.1.150/26"
+              >
+                /26 LAN
+              </button>
+              <button
+                class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700"
+                data-ip="10.0.0.1/16"
+              >
+                10.0/16
+              </button>
+              <button
+                class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700"
+                data-ip="100.64.0.1/10"
+              >
+                CGNAT
+              </button>
+              <button
+                class="ip-preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-indigo-300 border border-slate-700"
+                data-ip="192.0.2.1/24"
+              >
+                RFC 5737
+              </button>
+            </div>
+          </div>
+
+          <!-- Input Form -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 mt-5">
+            <div class="sm:col-span-6">
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5"
+                >Địa chỉ IPv4 (hoặc IP kèm CIDR)</label
+              >
+              <input
+                type="text"
+                id="ip-input"
+                aria-label="Địa chỉ IPv4"
+                value="192.168.1.150/26"
+                placeholder="ví dụ: 192.168.1.150/26"
+                class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+
+            <div class="sm:col-span-4">
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5"
+                >Prefix CIDR / Subnet Mask</label
+              >
+              <select
+                id="ip-prefix-select"
+                aria-label="Prefix CIDR"
+                class="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <!-- Populated by JS -->
+              </select>
+            </div>
+
+            <div class="sm:col-span-2 flex items-end">
+              <button
+                id="ip-calc-btn"
+                class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-1.5"
+              >
+                <span>Tính ngay</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- IP Calculation Results Area -->
+          <div id="ip-results" class="mt-6">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================== -->
+      <!-- VIEW 3: UNIT CONVERTER                                               -->
+      <!-- ==================================================================== -->
+      <section id="view-conv" class="w-full hidden space-y-6">
+        <div
+          class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl"
+        >
+          <div
+            class="pb-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          >
+            <div>
+              <h2
+                class="text-xl font-bold text-slate-100 flex items-center gap-2"
+              >
+                <span class="text-amber-400">⚖️</span> Bộ Quy Đổi Đơn Vị Chuyên
+                Dụng
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Dung lượng dữ liệu, Tốc độ mạng, Độ dài, Khối lượng, Nhiệt độ và
+                Thời gian.
+              </p>
+            </div>
+
+            <!-- Category Selector -->
+            <div class="w-full sm:w-64">
+              <select
+                id="conv-category"
+                aria-label="Nhóm đơn vị"
+                class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="storage">
+                  💾 Dung lượng Dữ liệu (B, KB, MB, GB, KiB...)
+                </option>
+                <option value="speed">
+                  ⚡ Tốc độ Truyền / Băng thông (Mbps, MB/s...)
+                </option>
+                <option value="length">
+                  📏 Độ dài (m, km, inch, ft, mile...)
+                </option>
+                <option value="weight">
+                  ⚖️ Khối lượng (kg, g, lb, oz, tấn...)
+                </option>
+                <option value="temperature">🌡️ Nhiệt độ (°C, °F, K)</option>
+                <option value="time">⏱️ Thời gian (s, min, h, day...)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 2-Way Conversion Inputs -->
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center mt-6">
+            <!-- Input A -->
+            <div class="md:col-span-2 space-y-2">
+              <label class="text-xs font-semibold text-slate-400"
+                >Giá trị đầu vào</label
+              >
+              <input
+                type="number"
+                id="conv-from-val"
+                aria-label="Giá trị đầu vào"
+                value="10"
+                step="any"
+                class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 text-lg font-mono font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <select
+                id="conv-from-unit"
+                aria-label="Đơn vị đầu vào"
+                class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm font-medium"
+              >
+                <!-- JS Populated -->
+              </select>
+            </div>
+
+            <!-- Arrow Switch Icon -->
+            <div class="md:col-span-1 flex justify-center py-2">
+              <button
+                id="conv-swap"
+                class="swap-button"
+                aria-label="Hoán đổi đơn vị"
+              >
+                ⇄
+              </button>
+            </div>
+
+            <!-- Input B -->
+            <div class="md:col-span-2 space-y-2">
+              <label class="text-xs font-semibold text-slate-400"
+                >Kết quả quy đổi</label
+              >
+              <input
+                type="number"
+                id="conv-to-val"
+                aria-label="Giá trị quy đổi"
+                step="any"
+                class="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-700 text-slate-100 text-lg font-mono font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <select
+                id="conv-to-unit"
+                aria-label="Đơn vị quy đổi"
+                class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-sm font-medium"
+              >
+                <!-- JS Populated -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Download Time Estimation Tool (shown only when category is Speed) -->
+          <div
+            id="download-calc-tool"
+            class="hidden mt-6 p-4 rounded-2xl bg-indigo-950/30 border border-indigo-800/50"
+          >
+            <div
+              class="text-xs uppercase font-bold text-indigo-400 tracking-wider mb-2"
+            >
+              ⚡ Tính Nhanh: Thời Gian Tải File Qua Băng Thông Mạng
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1"
+                  >Dung lượng file</label
+                >
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    id="dl-size"
+                    aria-label="Dung lượng file"
+                    value="10"
+                    class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-mono"
+                  />
+                  <select
+                    id="dl-size-unit"
+                    aria-label="Đơn vị dung lượng"
+                    class="px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs"
+                  >
+                    <option value="GB" selected>GB</option>
+                    <option value="MB">MB</option>
+                    <option value="TB">TB</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1"
+                  >Tốc độ mạng tải xuống</label
+                >
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    id="dl-speed"
+                    aria-label="Tốc độ tải xuống"
+                    value="100"
+                    class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm font-mono"
+                  />
+                  <select
+                    id="dl-speed-unit"
+                    aria-label="Đơn vị tốc độ"
+                    class="px-2 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs"
+                  >
+                    <option value="Mbps" selected>Mbps</option>
+                    <option value="Gbps">Gbps</option>
+                    <option value="MBps">MB/s</option>
+                  </select>
+                </div>
+              </div>
+              <div
+                class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-center"
+              >
+                <span class="text-xs text-slate-500 block"
+                  >Thời gian ước tính:</span
+                >
+                <span
+                  id="dl-result"
+                  class="text-base font-bold font-mono text-emerald-400"
+                  >13 phút 39 giây</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Comparison Reference Table -->
+          <div class="mt-6">
+            <h3
+              class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2"
+            >
+              Bảng Đối Chiếu Nhanh Tất Cả Đơn Vị
+            </h3>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead
+                  class="bg-slate-950 text-xs text-slate-400 border-b border-slate-800 font-semibold"
+                >
+                  <tr>
+                    <th class="py-2.5 px-3">Đơn Vị</th>
+                    <th class="py-2.5 px-3 text-right">Giá Trị Tương Đương</th>
+                  </tr>
+                </thead>
+                <tbody id="conv-quick-table">
+                  <!-- JS populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================== -->
+      <!-- VIEW 4: CALCULATION HISTORY                                         -->
+      <!-- ==================================================================== -->
+      <section id="view-history" class="w-full hidden space-y-4">
+        <div
+          class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl"
+        >
+          <div
+            class="flex items-center justify-between pb-4 border-b border-slate-800"
+          >
+            <div>
+              <h2
+                class="text-xl font-bold text-slate-100 flex items-center gap-2"
+              >
+                <span class="text-indigo-400">📜</span> Lịch Sử Tính Toán Máy
+                Tính fx-570
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Click vào bất kỳ phép tính nào để nạp lại vào máy tính.
+              </p>
+            </div>
+            <button
+              id="history-clear-btn"
+              class="px-3 py-1.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors"
+            >
+              Xóa lịch sử
+            </button>
+          </div>
+
+          <div
+            id="history-list"
+            class="mt-4 space-y-2 max-h-[60vh] overflow-y-auto pr-1"
+          >
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span
+        >calcspace<span class="brand-dot">.</span>
+        <span class="footer-divider">/</span> Một chút chính xác cho mỗi
+        ngày.</span
+      ><span
+        ><i></i> Sẵn sàng làm việc offline
+        <span class="footer-divider">·</span> Made for curious minds</span
+      >
+    </footer>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/ip-calc.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch((err) => {
+            console.log("SW registration note:", err);
+          });
         });
-      });
-    }
-  </script>
-</body>
+      }
+    </script>
+  </body>
 </html>

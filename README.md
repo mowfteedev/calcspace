@@ -1,67 +1,59 @@
-# Máy Tính Casio fx-570VN PLUS & SysAdmin Toolkit
+# Calcspace
 
-Ứng dụng web mô phỏng máy tính bỏ túi Casio fx-570VN PLUS, tích hợp công cụ tính toán mạng IPv4 Subnet/CIDR và bộ quy đổi đơn vị.
+Một không gian tính toán bằng tiếng Việt: máy tính khoa học lấy cảm hứng từ fx-570, bộ phân tích IPv4 subnet/CIDR và quy đổi đơn vị. Giao diện thích ứng với điện thoại, có chế độ sáng/tối, lịch sử trên thiết bị và hỗ trợ offline sau lần tải đầu tiên.
 
-* **Truy cập trực tuyến:** https://mowfteedev.github.io/may-tinh/
-* **Nền tảng:** Web tĩnh (HTML5 / CSS / Vanilla JS), chạy 100% Client-side, hỗ trợ PWA offline.
+## Chạy dự án
 
----
+Không cần cài thư viện để sử dụng:
 
-## Tính Năng Chính
-
-### 1. Máy Tính Khoa Học (fx-570)
-* Đầy đủ các phép toán: cộng, trừ, nhân, chia, phân số, căn bậc hai/ba, lũy thừa, logarit (`log`, `ln`), lượng giác (`sin`, `cos`, `tan`).
-* Phím `S⇔D`: Chuyển đổi giữa phân số và số thập phân.
-* Khử triệt để lỗi làm tròn số thực (`0.1 + 0.2 = 0.3`).
-* Hỗ trợ gõ trực tiếp từ bàn phím số Numpad và bàn phím máy tính.
-* Tự động lưu lịch sử phép tính trên trình duyệt.
-
-### 2. Tính Toán Mạng IPv4 (Subnet & CIDR)
-* Nhập địa chỉ IP và prefix (ví dụ `192.168.1.150/26`).
-* Tự động tính: Network ID, Broadcast Address, Subnet Mask, Wildcard Mask, dải IP khả dụng và tổng số host.
-* Phân loại dải IP theo chuẩn RFC: Private (RFC 1918), Loopback, Link-Local (APIPA), CGNAT (RFC 6598), TEST-NET (RFC 5737), Multicast, Public IP.
-* Hiển thị dạng nhị phân 32-bit và nút sao chép nhanh từng thông số.
-
-### 3. Quy Đổi Đơn Vị
-* **Dữ liệu số:** Chuyển đổi giữa Byte, KB, MB, GB, TB (chuẩn $10^3$) và KiB, MiB, GiB, TiB (chuẩn $1024$).
-* **Băng thông & Tải file:** Quy đổi tốc độ mạng (Mbps, MB/s) và ước tính thời gian tải file theo tốc độ đường truyền.
-* **Đơn vị thông dụng:** Độ dài, khối lượng, nhiệt độ, thời gian.
-
----
-
-## Hướng Dẫn Sử Dụng
-
-### Chạy Trên Máy Tính (Local)
-Không cần cài đặt thư viện hay môi trường Node.js:
-
-```bash
-# Mở trực tiếp bằng trình duyệt mặc định:
-xdg-open index.html
-
-# Hoặc khởi động server cục bộ nhẹ bằng Python:
+```sh
 python3 -m http.server 8080
 ```
 
-Truy cập: `http://localhost:8080`
+Mở **http://localhost:8080**. Có thể mở trực tiếp `index.html` để dùng các công cụ; PWA/offline và clipboard hoạt động tốt nhất trên localhost hoặc HTTPS.
 
-### Phím Tắt Bàn Phím
+## Tính năng
+
+- **Máy tính:** phép toán cơ bản, thứ tự ưu tiên, số mũ, căn bậc hai/ba, logarit, lượng giác và lượng giác ngược, DEG/RAD, giai thừa, phần trăm, π/e, Ans, bộ nhớ M và phân số/thập phân. Hỗ trợ nhân ngầm như `2(3+4)`.
+- **Lịch sử:** lưu tối đa 50 phép tính ngay trên trình duyệt, xem nhanh ba phép tính gần nhất, chọn để sửa và tính lại. REPLAY lên/xuống duyệt lịch sử, trái/phải di chuyển con trỏ.
+- **IPv4:** kiểm tra địa chỉ và CIDR nghiêm ngặt, network/broadcast, subnet/wildcard, host range, nhị phân, phân loại các dải phổ biến, sao chép nhanh. Hỗ trợ `/0`, `/31` và `/32`.
+- **Quy đổi:** dữ liệu thập phân/nhị phân, băng thông, độ dài, khối lượng, nhiệt độ và thời gian. Quy đổi hai chiều, hoán đổi đơn vị, bảng đối chiếu cập nhật trực tiếp và thời gian tải file.
+- **Offline:** toàn bộ CSS/JS/icon nằm trong dự án; không tải font hoặc mã giao diện từ CDN. Service worker ưu tiên bản mới từ mạng và dùng cache khi mất kết nối.
+
+Đây là máy tính khoa học web, không mô phỏng toàn bộ chức năng của phần cứng Casio. Kết quả hiển thị làm tròn 12 chữ số có nghĩa; không dùng cho phép tính đòi hỏi độ chính xác tùy ý. Lịch sử nằm trong bộ nhớ trình duyệt của thiết bị đang dùng.
+
+## Phím tắt
+
 | Phím | Chức năng |
-| :--- | :--- |
-| `0` - `9` | Nhập số |
-| `+`, `-`, `*`, `/` | Phép tính Cộng, Trừ, Nhân, Chia |
-| `Enter` hoặc `=` | Tính kết quả |
-| `Backspace` | Xóa lùi ký tự (`DEL`) |
-| `Escape` | Xóa toàn bộ (`AC`) |
-| `Shift` | Phím `SHIFT` (vàng) |
-| `Alt` hoặc `A` | Phím `ALPHA` (đỏ) |
-| `(` và `)` | Đóng/mở ngoặc |
-| `^` | Lũy thừa |
-| `S`, `C`, `T` | Hàm `sin`, `cos`, `tan` |
-| `L` | Hàm `log` |
-| `D` | Phím `S⇔D` (Phân số ⇔ Thập phân) |
-| `M` | Mở menu chế độ (`MODE`) |
+| --- | --- |
+| `0–9`, `.`, `+`, `-`, `*`, `/`, `^`, `(`, `)` | Nhập biểu thức |
+| `Enter` / `=` | Tính kết quả |
+| `Backspace` | Xóa trước con trỏ |
+| `Escape` | Xóa biểu thức |
+| Phím mũi tên | Di chuyển con trỏ / duyệt lịch sử |
+| `S`, `C`, `T`, `L` | sin, cos, tan, log |
+| `D` | Đổi phân số / thập phân |
+| `M` | Menu công cụ |
+| `A` | Nhập π |
+| `Shift`, sau đó phím hàm | Hàm thứ hai theo nhãn trên phím |
+| `%`, `!` | Phần trăm, giai thừa |
 
----
+Nhấn nút **π / e** để nhập π, hoặc **SHIFT → π / e** để nhập e. **M+** cộng kết quả vào bộ nhớ; **SHIFT → M+** trừ; **RCL** đọc bộ nhớ; **SHIFT → RCL** xóa bộ nhớ. Dùng dấu ngoặc đầy đủ, ví dụ `sin(30)`.
 
-## Giấy Phép
-Phát hành theo giấy phép [MIT](LICENSE).
+## Phát triển & kiểm tra
+
+Node.js 18+ chỉ cần khi chạy kiểm tra tự động. Dự án không có phụ thuộc npm:
+
+```sh
+npm test
+```
+
+`css/utilities.css` chứa các lớp tiện ích được biên dịch sẵn từ Tailwind CSS 3 (MIT); website không phụ thuộc vào trình biên dịch hoặc CDN. Khi mở rộng giao diện, thêm CSS vào `css/style.css` hoặc dùng các lớp đã có trong `utilities.css`. Khi thay đổi tài nguyên offline, tăng phiên bản `CACHE_NAME` trong `sw.js`.
+
+- `index.html`: bố cục và các công cụ.
+- `js/calculator.js`: bộ phân tích biểu thức, trạng thái máy tính và lịch sử.
+- `js/ip-calc.js`, `js/converter.js`: logic mạng và quy đổi.
+- `js/app.js`: tương tác giao diện, bàn phím, clipboard và chủ đề.
+- `tests/engines.test.cjs`: kiểm tra hồi quy cho ba bộ tính toán.
+
+Giấy phép [MIT](LICENSE).

@@ -1,71 +1,138 @@
 // Main UI Orchestrator for Casio fx-570VN PLUS & Toolkit
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Mode state: 'calc', 'ip', 'conv', 'history'
-  let currentTab = 'calc';
+  let currentTab = "calc";
   let isMenuMode = false;
+  let replayIndex = -1;
+  const escapeHTML = (value) =>
+    String(value ?? "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  const preferences = {
+    get(key, fallback) {
+      try {
+        return localStorage.getItem(key) || fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {}
+    },
+  };
+  let toastTimer;
+  function toast(message) {
+    const el = document.getElementById("toast");
+    el.textContent = message;
+    el.classList.add("visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("visible"), 2200);
+  }
+  async function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext)
+      return navigator.clipboard.writeText(text);
+    const field = document.createElement("textarea");
+    field.value = text;
+    field.style.position = "fixed";
+    field.style.opacity = "0";
+    document.body.append(field);
+    field.select();
+    const ok = document.execCommand("copy");
+    field.remove();
+    if (!ok) throw new Error("Copy failed");
+  }
 
   // DOM Elements - Navigation
-  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabButtons = document.querySelectorAll(".tab-btn");
   const viewSections = {
-    calc: document.getElementById('view-calc'),
-    ip: document.getElementById('view-ip'),
-    conv: document.getElementById('view-conv'),
-    history: document.getElementById('view-history')
+    calc: document.getElementById("view-calc"),
+    ip: document.getElementById("view-ip"),
+    conv: document.getElementById("view-conv"),
+    history: document.getElementById("view-history"),
   };
 
   // Sound & Theme
-  const soundBtn = document.getElementById('btn-sound-toggle');
-  const themeBtn = document.getElementById('btn-theme-toggle');
+  const soundBtn = document.getElementById("btn-sound-toggle");
+  const themeBtn = document.getElementById("btn-theme-toggle");
 
   // Calculator Screen Elements
-  const lcdExpr = document.getElementById('lcd-expression');
-  const lcdResult = document.getElementById('lcd-result');
-  const indShift = document.getElementById('ind-shift');
-  const indAlpha = document.getElementById('ind-alpha');
-  const indAngle = document.getElementById('ind-angle');
-  const indMath = document.getElementById('ind-math');
+  const lcdExpr = document.getElementById("lcd-expression");
+  const lcdResult = document.getElementById("lcd-result");
+  const indShift = document.getElementById("ind-shift");
+  const indAlpha = document.getElementById("ind-alpha");
+  const indAngle = document.getElementById("ind-angle");
+  const indMath = document.getElementById("ind-math");
 
   // ----------------------------------------------------
   // Tab Switching
   // ----------------------------------------------------
   function switchTab(tabName) {
     currentTab = tabName;
-    tabButtons.forEach(btn => {
+    isMenuMode = false;
+    tabButtons.forEach((btn) => {
       if (btn.dataset.tab === tabName) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
       } else {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
+        btn.classList.remove("active");
+        btn.setAttribute("aria-selected", "false");
       }
     });
 
-    Object.keys(viewSections).forEach(key => {
+    Object.keys(viewSections).forEach((key) => {
       if (viewSections[key]) {
         if (key === tabName) {
-          viewSections[key].classList.remove('hidden');
+          viewSections[key].classList.remove("hidden");
         } else {
-          viewSections[key].classList.add('hidden');
+          viewSections[key].classList.add("hidden");
         }
       }
     });
 
-    if (tabName === 'history') {
+    if (tabName === "history") {
       renderHistory();
     }
   }
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
       window.soundEngine.playClick();
       switchTab(btn.dataset.tab);
     });
   });
 
+  document
+    .querySelectorAll("[data-open-tab]")
+    .forEach((button) =>
+      button.addEventListener("click", () => switchTab(button.dataset.openTab)),
+    );
+  document
+    .getElementById("show-all-history")
+    .addEventListener("click", () => switchTab("history"));
+  document.querySelectorAll("[data-example]").forEach((button) =>
+    button.addEventListener("click", () => {
+      window.casioCalc.clear();
+      window.casioCalc.expression = button.dataset.example;
+      window.casioCalc.evaluate();
+      updateScreen();
+    }),
+  );
+
   // Sound Toggle
   if (soundBtn) {
-    soundBtn.addEventListener('click', () => {
+    soundBtn.addEventListener("click", () => {
       const enabled = window.soundEngine.toggle();
+      soundBtn.setAttribute("aria-pressed", String(enabled));
       soundBtn.innerHTML = enabled
         ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg><span class="hidden sm:inline">Âm thanh</span>`
         : `<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg><span class="hidden sm:inline">Tắt tiếng</span>`;
@@ -74,10 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Dark/Light Theme Toggle
   if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
+    themeBtn.addEventListener("click", () => {
       window.soundEngine.playClick();
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('fx570_theme', isDark ? 'dark' : 'light');
+      const isDark = document.documentElement.classList.toggle("dark");
+      document.documentElement.classList.toggle("light", !isDark);
+      preferences.set("fx570_theme", isDark ? "dark" : "light");
       themeBtn.innerHTML = isDark
         ? `<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><span class="hidden sm:inline">Sáng</span>`
         : `<svg class="w-4 h-4 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg><span class="hidden sm:inline">Tối</span>`;
@@ -85,11 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Restore saved theme
-  const savedTheme = localStorage.getItem('fx570_theme') || 'dark';
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
+  const savedTheme = preferences.get("fx570_theme", "dark");
+  document.documentElement.classList.toggle("light", savedTheme === "light");
+  if (savedTheme === "dark") {
+    document.documentElement.classList.add("dark");
   } else {
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove("dark");
+    const label = themeBtn.querySelector("span");
+    if (label) label.textContent = "Tối";
   }
 
   // ----------------------------------------------------
@@ -97,26 +168,39 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   function updateScreen() {
     if (isMenuMode) {
-      lcdExpr.textContent = '1: COMP      2: IP-NET';
-      lcdResult.textContent = '3: CONV      4: BASE-N';
+      lcdExpr.textContent = "1: COMP      2: IP-NET";
+      lcdResult.textContent = "3: CONV      4: HISTORY";
       return;
     }
 
-    lcdExpr.textContent = window.casioCalc.expression || ' ';
+    const calc = window.casioCalc;
+    lcdExpr.textContent = calc.isResultDisplayed
+      ? calc.expression
+      : calc.expression.slice(0, calc.cursor) +
+        "▏" +
+        calc.expression.slice(calc.cursor);
+    document.getElementById("ind-mem").style.opacity = calc.memory
+      ? "1"
+      : "0.15";
+    renderRecentHistory();
     lcdResult.textContent = window.casioCalc.result;
+    lcdExpr.scrollLeft = lcdExpr.scrollWidth;
 
-    if (indShift) indShift.style.opacity = window.casioCalc.shiftActive ? '1' : '0.15';
-    if (indAlpha) indAlpha.style.opacity = window.casioCalc.alphaActive ? '1' : '0.15';
-    if (indAngle) indAngle.textContent = window.casioCalc.angleMode === 'DEG' ? 'D' : 'R';
-    if (indMath) indMath.style.opacity = '1';
+    if (indShift)
+      indShift.style.opacity = window.casioCalc.shiftActive ? "1" : "0.15";
+    if (indAlpha)
+      indAlpha.style.opacity = window.casioCalc.alphaActive ? "1" : "0.15";
+    if (indAngle)
+      indAngle.textContent = window.casioCalc.angleMode === "DEG" ? "D" : "R";
+    if (indMath) indMath.style.opacity = "1";
   }
 
   // ----------------------------------------------------
   // Calculator Key Click Handling
   // ----------------------------------------------------
-  const calcButtons = document.querySelectorAll('.calc-btn');
-  calcButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+  const calcButtons = document.querySelectorAll(".calc-btn");
+  calcButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
       window.soundEngine.playClick();
       handleCalcAction(btn.dataset.action, btn.dataset.val);
     });
@@ -125,43 +209,36 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleCalcAction(action, val) {
     const calc = window.casioCalc;
     const isShift = calc.shiftActive;
-    const isAlpha = calc.alphaActive;
 
     // Reset shift/alpha after consuming action unless toggling them
-    if (action !== 'shift' && action !== 'alpha') {
+    if (action !== "shift" && action !== "alpha") {
       calc.shiftActive = false;
       calc.alphaActive = false;
     }
 
     // If currently in MODE menu
     if (isMenuMode) {
-      if (val === '1' || action === 'num' && val === '1') {
+      if (val === "1" || (action === "num" && val === "1")) {
         isMenuMode = false;
-        switchTab('calc');
+        switchTab("calc");
         updateScreen();
         return;
       }
-      if (val === '2' || action === 'num' && val === '2') {
+      if (val === "2" || (action === "num" && val === "2")) {
         isMenuMode = false;
-        switchTab('ip');
+        switchTab("ip");
         updateScreen();
         return;
       }
-      if (val === '3' || action === 'num' && val === '3') {
+      if (val === "3" || (action === "num" && val === "3")) {
         isMenuMode = false;
-        switchTab('conv');
+        switchTab("conv");
         updateScreen();
         return;
       }
-      if (val === '4' || action === 'num' && val === '4') {
+      if (val === "4" || (action === "num" && val === "4")) {
         isMenuMode = false;
-        switchTab('conv');
-        // Select storage for base
-        const sel = document.getElementById('conv-category');
-        if (sel) {
-          sel.value = 'storage';
-          sel.dispatchEvent(new Event('change'));
-        }
+        switchTab("history");
         updateScreen();
         return;
       }
@@ -170,16 +247,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     switch (action) {
-      case 'num':
-      case 'dot':
-        calc.input(val);
+      case "num":
+      case "dot":
+        if (isShift && val === ".") calc.input(String(Math.random()));
+        else calc.input(val);
         break;
 
-      case 'op':
-        calc.input(val);
+      case "op":
+        calc.input(
+          isShift && val === "²" ? "³" : isShift && val === "(" ? "%" : val,
+        );
         break;
 
-      case 'fn':
+      case "fn":
         if (isShift && btnHasShift(val)) {
           calc.input(getShiftFn(val));
         } else {
@@ -187,60 +267,96 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
 
-      case 'shift':
+      case "shift":
         calc.toggleShift();
         break;
 
-      case 'alpha':
-        calc.toggleAlpha();
+      case "constant":
+      case "alpha":
+        calc.input(isShift ? "e" : "π");
         break;
 
-      case 'mode':
+      case "mode":
         isMenuMode = !isMenuMode;
         break;
 
-      case 'on':
-      case 'ac':
+      case "on":
+      case "ac":
         isMenuMode = false;
         calc.clear();
         break;
 
-      case 'del':
+      case "del":
         calc.deleteChar();
         break;
 
-      case 'equals':
+      case "equals":
         calc.evaluate();
         break;
 
-      case 'sd': // S<=>D fraction / decimal toggle
+      case "sd": // S<=>D fraction / decimal toggle
         calc.toggleFraction();
         break;
 
-      case 'angle':
+      case "angle":
         calc.toggleAngleMode();
         break;
 
-      case 'ans':
-        calc.input('Ans');
+      case "recall":
+        if (isShift) {
+          calc.memory = 0;
+          toast("Đã xóa bộ nhớ");
+        } else calc.input("(" + calc.cleanFloat(calc.memory) + ")");
         break;
 
-      case 'exp':
-        calc.input('×10^');
-        break;
-
-      case 'pm': // plus-minus
-        calc.input('(-)');
-        break;
-
-      case 'replay-up':
-      case 'replay-down':
-        if (calc.history.length > 0) {
-          const item = calc.history[0];
-          calc.expression = item.expr;
-          calc.result = item.result;
-          calc.isResultDisplayed = true;
+      case "memory":
+        if (!calc.isResultDisplayed) calc.evaluate();
+        if (calc.isResultDisplayed && !calc.result.includes("ERROR")) {
+          calc.memory += (isShift ? -1 : 1) * calc.rawResult;
+          toast("Bộ nhớ M = " + calc.formatNumber(calc.memory));
         }
+        break;
+
+      case "ans":
+        calc.input(isShift ? "%" : "Ans");
+        break;
+
+      case "exp":
+        calc.input(isShift ? "π" : "×10^");
+        break;
+
+      case "pm": // plus-minus
+        if (calc.isResultDisplayed && !calc.result.includes("ERROR")) {
+          calc.expression = "-Ans";
+          calc.evaluate();
+        } else calc.input("-");
+        break;
+
+      case "replay-up":
+      case "replay-down":
+        if (calc.history.length) {
+          replayIndex = Math.max(
+            0,
+            Math.min(
+              calc.history.length - 1,
+              replayIndex + (action === "replay-up" ? 1 : -1),
+            ),
+          );
+          const item = calc.history[replayIndex];
+          calc.expression = item.expr;
+          calc.isResultDisplayed = false;
+        }
+        break;
+      case "replay-left":
+      case "replay-right":
+        calc.isResultDisplayed = false;
+        calc.cursor = Math.max(
+          0,
+          Math.min(
+            calc.expression.length,
+            calc.cursor + (action === "replay-left" ? -1 : 1),
+          ),
+        );
         break;
 
       default:
@@ -252,104 +368,142 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function btnHasShift(fn) {
-    return ['sin(', 'cos(', 'tan(', 'log(', 'ln(', '√(', 'x²', '^'].includes(fn);
+    return ["sin(", "cos(", "tan(", "log(", "ln(", "√(", "x²", "^"].includes(
+      fn,
+    );
   }
 
   function getShiftFn(fn) {
     switch (fn) {
-      case 'sin(': return 'sin⁻¹(';
-      case 'cos(': return 'cos⁻¹(';
-      case 'tan(': return 'tan⁻¹(';
-      case 'log(': return '10^(';
-      case 'ln(': return 'e^(';
-      case '√(': return '∛(';
-      case 'x²': return '³';
-      default: return fn;
+      case "sin(":
+        return "sin⁻¹(";
+      case "cos(":
+        return "cos⁻¹(";
+      case "tan(":
+        return "tan⁻¹(";
+      case "log(":
+        return "10^(";
+      case "ln(":
+        return "e^(";
+      case "√(":
+        return "∛(";
+      case "x²":
+        return "³";
+      default:
+        return fn;
     }
   }
 
   // ----------------------------------------------------
   // Keyboard Support
   // ----------------------------------------------------
-  window.addEventListener('keydown', (e) => {
+  window.addEventListener("keydown", (e) => {
     // Only capture keyboard in calculator tab and when no input field is focused
-    if (currentTab !== 'calc' || document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') {
+    if (
+      currentTab !== "calc" ||
+      document.activeElement.tagName === "INPUT" ||
+      document.activeElement.tagName === "SELECT"
+    ) {
       return;
     }
 
+    if (
+      e.ctrlKey ||
+      e.metaKey ||
+      e.altKey ||
+      e.target.isContentEditable ||
+      e.target.tagName === "TEXTAREA"
+    )
+      return;
     const key = e.key;
+    if (key === "Enter" && e.target.tagName === "BUTTON") return;
+    if (
+      key === "ArrowLeft" ||
+      key === "ArrowRight" ||
+      key === "ArrowUp" ||
+      key === "ArrowDown"
+    ) {
+      e.preventDefault();
+      handleCalcAction("replay-" + key.slice(5).toLowerCase());
+      return;
+    }
+    if (key === "%" || key === "!") {
+      e.preventDefault();
+      handleCalcAction("op", key);
+      return;
+    }
 
-    if (key >= '0' && key <= '9') {
+    if (key >= "0" && key <= "9") {
       window.soundEngine.playClick();
-      handleCalcAction('num', key);
+      handleCalcAction("num", key);
       e.preventDefault();
-    } else if (key === '+' || key === '-') {
+    } else if (key === "+" || key === "-") {
       window.soundEngine.playClick();
-      handleCalcAction('op', key);
+      handleCalcAction("op", key);
       e.preventDefault();
-    } else if (key === '*') {
+    } else if (key === "*") {
       window.soundEngine.playClick();
-      handleCalcAction('op', '×');
+      handleCalcAction("op", "×");
       e.preventDefault();
-    } else if (key === '/') {
+    } else if (key === "/") {
       window.soundEngine.playClick();
-      handleCalcAction('op', '÷');
+      handleCalcAction("op", "÷");
       e.preventDefault();
-    } else if (key === '.' || key === ',') {
+    } else if (key === "." || key === ",") {
       window.soundEngine.playClick();
-      handleCalcAction('dot', '.');
+      handleCalcAction("dot", ".");
       e.preventDefault();
-    } else if (key === 'Enter' || key === '=') {
+    } else if (key === "Enter" || key === "=") {
       window.soundEngine.playClick();
-      handleCalcAction('equals');
+      handleCalcAction("equals");
       e.preventDefault();
-    } else if (key === 'Backspace') {
+    } else if (key === "Backspace") {
       window.soundEngine.playClick();
-      handleCalcAction('del');
+      handleCalcAction("del");
       e.preventDefault();
-    } else if (key === 'Escape') {
+    } else if (key === "Escape") {
       window.soundEngine.playClick();
-      handleCalcAction('ac');
+      handleCalcAction("ac");
       e.preventDefault();
-    } else if (key === '(' || key === ')') {
+    } else if (key === "(" || key === ")") {
       window.soundEngine.playClick();
-      handleCalcAction('op', key);
+      handleCalcAction("op", key);
       e.preventDefault();
-    } else if (key === '^') {
+    } else if (key === "^") {
       window.soundEngine.playClick();
-      handleCalcAction('op', '^');
+      handleCalcAction("op", "^");
       e.preventDefault();
-    } else if (key === 's' || key === 'S') {
+    } else if (key === "s" || key === "S") {
       window.soundEngine.playClick();
-      handleCalcAction('fn', 'sin(');
+      handleCalcAction("fn", "sin(");
       e.preventDefault();
-    } else if (key === 'c' || key === 'C') {
+    } else if (key === "c" || key === "C") {
       window.soundEngine.playClick();
-      handleCalcAction('fn', 'cos(');
+      handleCalcAction("fn", "cos(");
       e.preventDefault();
-    } else if (key === 't' || key === 'T') {
+    } else if (key === "t" || key === "T") {
       window.soundEngine.playClick();
-      handleCalcAction('fn', 'tan(');
+      handleCalcAction("fn", "tan(");
       e.preventDefault();
-    } else if (key === 'l' || key === 'L') {
+    } else if (key === "l" || key === "L") {
       window.soundEngine.playClick();
-      handleCalcAction('fn', 'log(');
+      handleCalcAction("fn", "log(");
       e.preventDefault();
-    } else if (key === 'd' || key === 'D') {
+    } else if (key === "d" || key === "D") {
       window.soundEngine.playClick();
-      handleCalcAction('sd');
+      handleCalcAction("sd");
       e.preventDefault();
-    } else if (key === 'm' || key === 'M') {
+    } else if (key === "m" || key === "M") {
       window.soundEngine.playClick();
-      handleCalcAction('mode');
+      handleCalcAction("mode");
       e.preventDefault();
-    } else if (key === 'Shift') {
+    } else if (key === "Shift") {
       window.soundEngine.playClick();
-      handleCalcAction('shift');
+      handleCalcAction("shift");
       e.preventDefault();
-    } else if (key === 'Alt' || key === 'a' || key === 'A') {
+    } else if (key === "Alt" || key === "a" || key === "A") {
       window.soundEngine.playClick();
-      handleCalcAction('alpha');
+      handleCalcAction("alpha");
       e.preventDefault();
     }
   });
@@ -357,20 +511,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   // IP / CIDR Calculator Subnet Module
   // ----------------------------------------------------
-  const ipInput = document.getElementById('ip-input');
-  const prefixSelect = document.getElementById('ip-prefix-select');
-  const ipCalcBtn = document.getElementById('ip-calc-btn');
-  const ipResultContainer = document.getElementById('ip-results');
-  const ipPresets = document.querySelectorAll('.ip-preset-btn');
+  const ipInput = document.getElementById("ip-input");
+  const prefixSelect = document.getElementById("ip-prefix-select");
+  const ipCalcBtn = document.getElementById("ip-calc-btn");
+  const ipResultContainer = document.getElementById("ip-results");
+  const ipPresets = document.querySelectorAll(".ip-preset-btn");
 
   // Populate CIDR dropdown /0 to /32
   if (prefixSelect) {
-    prefixSelect.innerHTML = '';
+    prefixSelect.innerHTML = "";
     for (let p = 32; p >= 0; p--) {
-      const opt = document.createElement('option');
+      const opt = document.createElement("option");
       opt.value = p;
       const maskStr = window.ipCalc.intToIp(window.ipCalc.prefixToMask(p));
-      const hosts = p >= 32 ? 1 : (p === 31 ? 2 : Math.max(0, Math.pow(2, 32 - p) - 2));
+      const hosts =
+        p >= 32 ? 1 : p === 31 ? 2 : Math.max(0, Math.pow(2, 32 - p) - 2);
       opt.textContent = `/${p} — Mask: ${maskStr} (${hosts.toLocaleString()} hosts)`;
       if (p === 24) opt.selected = true;
       prefixSelect.appendChild(opt);
@@ -379,12 +534,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function runIpCalculation() {
     const rawIp = ipInput.value.trim();
-    if (!rawIp) return;
+    if (!rawIp) {
+      ipResultContainer.textContent = "Vui lòng nhập địa chỉ IPv4.";
+      return;
+    }
 
     let prefix = parseInt(prefixSelect.value, 10);
     // If input contains slash, parse prefix from it
-    if (rawIp.includes('/')) {
-      const slashPart = rawIp.split('/')[1];
+    if (rawIp.includes("/")) {
+      const slashPart = rawIp.split("/")[1];
       const parsedP = parseInt(slashPart, 10);
       if (!isNaN(parsedP) && parsedP >= 0 && parsedP <= 32) {
         prefix = parsedP;
@@ -498,27 +656,34 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     // Bind copy buttons
-    ipResultContainer.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    ipResultContainer.querySelectorAll(".copy-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
         window.soundEngine.playClick();
-        navigator.clipboard.writeText(btn.dataset.copy);
+        try {
+          await copyText(btn.dataset.copy);
+        } catch {
+          toast("Không thể sao chép. Hãy chọn và chép thủ công.");
+          return;
+        }
         const originalText = btn.textContent;
-        btn.textContent = 'Đã chép!';
-        setTimeout(() => { btn.textContent = originalText; }, 1500);
+        btn.textContent = "Đã chép!";
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1500);
       });
     });
   }
 
   if (ipCalcBtn) {
-    ipCalcBtn.addEventListener('click', () => {
+    ipCalcBtn.addEventListener("click", () => {
       window.soundEngine.playClick();
       runIpCalculation();
     });
   }
 
   if (ipInput) {
-    ipInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
+    ipInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
         window.soundEngine.playClick();
         runIpCalculation();
       }
@@ -526,14 +691,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (prefixSelect) {
-    prefixSelect.addEventListener('change', () => {
+    prefixSelect.addEventListener("change", () => {
+      ipInput.value = ipInput.value.split("/")[0];
       window.soundEngine.playClick();
       runIpCalculation();
     });
   }
 
-  ipPresets.forEach(btn => {
-    btn.addEventListener('click', () => {
+  ipPresets.forEach((btn) => {
+    btn.addEventListener("click", () => {
       window.soundEngine.playClick();
       const ip = btn.dataset.ip;
       ipInput.value = ip;
@@ -544,20 +710,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ----------------------------------------------------
   // Unit Converter Module
   // ----------------------------------------------------
-  const convCategory = document.getElementById('conv-category');
-  const convFromVal = document.getElementById('conv-from-val');
-  const convFromUnit = document.getElementById('conv-from-unit');
-  const convToVal = document.getElementById('conv-to-val');
-  const convToUnit = document.getElementById('conv-to-unit');
-  const convTableBody = document.getElementById('conv-quick-table');
-  const downloadTool = document.getElementById('download-calc-tool');
+  const convCategory = document.getElementById("conv-category");
+  const convFromVal = document.getElementById("conv-from-val");
+  const convFromUnit = document.getElementById("conv-from-unit");
+  const convToVal = document.getElementById("conv-to-val");
+  const convToUnit = document.getElementById("conv-to-unit");
+  const convTableBody = document.getElementById("conv-quick-table");
+  const downloadTool = document.getElementById("download-calc-tool");
 
   function populateUnitDropdowns(catKey) {
     const cat = window.unitConverter.definitions[catKey];
     if (!cat) return;
 
-    convFromUnit.innerHTML = '';
-    convToUnit.innerHTML = '';
+    convFromUnit.innerHTML = "";
+    convToUnit.innerHTML = "";
 
     const keys = Object.keys(cat.units);
     keys.forEach((unitKey, idx) => {
@@ -575,33 +741,43 @@ document.addEventListener('DOMContentLoaded', () => {
       convToUnit.selectedIndex = 1;
     }
 
-    if (catKey === 'speed') {
-      if (downloadTool) downloadTool.classList.remove('hidden');
+    if (catKey === "speed") {
+      if (downloadTool) downloadTool.classList.remove("hidden");
     } else {
-      if (downloadTool) downloadTool.classList.add('hidden');
+      if (downloadTool) downloadTool.classList.add("hidden");
     }
 
-    runConversion('from');
+    runConversion("from");
     renderQuickTable(catKey);
   }
 
-  function runConversion(direction = 'from') {
+  function runConversion(direction = "from") {
     const catKey = convCategory.value;
-    if (direction === 'from') {
+    if (direction === "from") {
       const val = parseFloat(convFromVal.value);
       if (isNaN(val)) {
-        convToVal.value = '';
+        convToVal.value = "";
         return;
       }
-      const res = window.unitConverter.convert(catKey, val, convFromUnit.value, convToUnit.value);
+      const res = window.unitConverter.convert(
+        catKey,
+        val,
+        convFromUnit.value,
+        convToUnit.value,
+      );
       convToVal.value = window.casioCalc.cleanFloat(res);
     } else {
       const val = parseFloat(convToVal.value);
       if (isNaN(val)) {
-        convFromVal.value = '';
+        convFromVal.value = "";
         return;
       }
-      const res = window.unitConverter.convert(catKey, val, convToUnit.value, convFromUnit.value);
+      const res = window.unitConverter.convert(
+        catKey,
+        val,
+        convToUnit.value,
+        convFromUnit.value,
+      );
       convFromVal.value = window.casioCalc.cleanFloat(res);
     }
   }
@@ -611,15 +787,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const cat = window.unitConverter.definitions[catKey];
     if (!cat) return;
 
-    const baseVal = parseFloat(convFromVal.value) || 1;
+    const parsedValue = parseFloat(convFromVal.value);
+    const baseVal = Number.isFinite(parsedValue) ? parsedValue : 0;
     const currentFromUnit = convFromUnit.value;
 
-    convTableBody.innerHTML = '';
-    Object.keys(cat.units).forEach(uKey => {
+    convTableBody.innerHTML = "";
+    Object.keys(cat.units).forEach((uKey) => {
       const u = cat.units[uKey];
-      const converted = window.unitConverter.convert(catKey, baseVal, currentFromUnit, uKey);
-      const tr = document.createElement('tr');
-      tr.className = 'border-b border-neutral-200 dark:border-neutral-800 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800/40';
+      const converted = window.unitConverter.convert(
+        catKey,
+        baseVal,
+        currentFromUnit,
+        uKey,
+      );
+      const tr = document.createElement("tr");
+      tr.className =
+        "border-b border-neutral-200 dark:border-neutral-800 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800/40";
       tr.innerHTML = `
         <td class="py-2 px-3 font-medium text-neutral-700 dark:text-neutral-300">${u.name}</td>
         <td class="py-2 px-3 text-right font-mono font-bold text-neutral-900 dark:text-neutral-100">${window.casioCalc.cleanFloat(converted)}</td>
@@ -629,57 +812,86 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (convCategory) {
-    convCategory.addEventListener('change', () => {
+    convCategory.addEventListener("change", () => {
       window.soundEngine.playClick();
       populateUnitDropdowns(convCategory.value);
     });
-    convFromVal.addEventListener('input', () => runConversion('from'));
-    convToVal.addEventListener('input', () => runConversion('to'));
-    convFromUnit.addEventListener('change', () => {
-      window.soundEngine.playClick();
-      runConversion('from');
+    convFromVal.addEventListener("input", () => {
+      runConversion("from");
       renderQuickTable(convCategory.value);
     });
-    convToUnit.addEventListener('change', () => {
-      window.soundEngine.playClick();
-      runConversion('from');
+    convToVal.addEventListener("input", () => {
+      runConversion("to");
+      renderQuickTable(convCategory.value);
     });
-    populateUnitDropdowns('storage');
+    convFromUnit.addEventListener("change", () => {
+      window.soundEngine.playClick();
+      runConversion("from");
+      renderQuickTable(convCategory.value);
+    });
+    convToUnit.addEventListener("change", () => {
+      window.soundEngine.playClick();
+      runConversion("from");
+    });
+    populateUnitDropdowns("storage");
+    convFromUnit.value = "GB";
+    convToUnit.value = "GiB";
+    runConversion();
+    renderQuickTable("storage");
+    document.getElementById("conv-swap").addEventListener("click", () => {
+      [convFromUnit.value, convToUnit.value] = [
+        convToUnit.value,
+        convFromUnit.value,
+      ];
+      convFromVal.value = convToVal.value;
+      runConversion();
+      renderQuickTable(convCategory.value);
+    });
   }
 
   // Download Time Calculator
-  const dlSize = document.getElementById('dl-size');
-  const dlSizeUnit = document.getElementById('dl-size-unit');
-  const dlSpeed = document.getElementById('dl-speed');
-  const dlSpeedUnit = document.getElementById('dl-speed-unit');
-  const dlResult = document.getElementById('dl-result');
+  const dlSize = document.getElementById("dl-size");
+  const dlSizeUnit = document.getElementById("dl-size-unit");
+  const dlSpeed = document.getElementById("dl-speed");
+  const dlSpeedUnit = document.getElementById("dl-speed-unit");
+  const dlResult = document.getElementById("dl-result");
 
   function calculateDownload() {
     if (!dlSize || !dlSpeed || !dlResult) return;
     const size = parseFloat(dlSize.value);
     const speed = parseFloat(dlSpeed.value);
-    if (isNaN(size) || isNaN(speed) || speed <= 0) {
-      dlResult.textContent = '--';
+    if (
+      !Number.isFinite(size) ||
+      !Number.isFinite(speed) ||
+      size < 0 ||
+      speed <= 0
+    ) {
+      dlResult.textContent = "--";
       return;
     }
-    const res = window.unitConverter.calculateDownloadTime(size, dlSizeUnit.value, speed, dlSpeedUnit.value);
+    const res = window.unitConverter.calculateDownloadTime(
+      size,
+      dlSizeUnit.value,
+      speed,
+      dlSpeedUnit.value,
+    );
     if (res) {
       dlResult.textContent = res.formattedTime;
     }
   }
 
   if (dlSize) {
-    [dlSize, dlSizeUnit, dlSpeed, dlSpeedUnit].forEach(el => {
-      el.addEventListener('input', calculateDownload);
-      el.addEventListener('change', calculateDownload);
+    [dlSize, dlSizeUnit, dlSpeed, dlSpeedUnit].forEach((el) => {
+      el.addEventListener("input", calculateDownload);
+      el.addEventListener("change", calculateDownload);
     });
   }
 
   // ----------------------------------------------------
   // History Panel
   // ----------------------------------------------------
-  const historyList = document.getElementById('history-list');
-  const historyClearBtn = document.getElementById('history-clear-btn');
+  const historyList = document.getElementById("history-list");
+  const historyClearBtn = document.getElementById("history-clear-btn");
 
   function renderHistory() {
     if (!historyList) return;
@@ -694,29 +906,33 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    historyList.innerHTML = list.map((item, idx) => `
-      <div class="p-3 rounded-xl bg-neutral-100 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/60 flex items-center justify-between hover:border-indigo-500 transition-colors cursor-pointer history-item" data-idx="${idx}">
+    historyList.innerHTML = list
+      .map(
+        (item, idx) => `
+      <button type="button" class="w-full text-left p-3 rounded-xl bg-neutral-100 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700/60 flex items-center justify-between hover:border-indigo-500 transition-colors cursor-pointer history-item" data-idx="${idx}">
         <div>
-          <div class="text-xs text-neutral-500 font-mono">${item.time}</div>
-          <div class="text-sm font-mono text-neutral-700 dark:text-neutral-300">${item.expr}</div>
+          <div class="text-xs text-neutral-500 font-mono">${escapeHTML(item.time)}</div>
+          <div class="text-sm font-mono text-neutral-700 dark:text-neutral-300">${escapeHTML(item.expr)}</div>
         </div>
         <div class="text-right">
-          <div class="text-base font-mono font-bold text-indigo-600 dark:text-indigo-400">${item.result}</div>
+          <div class="text-base font-mono font-bold text-indigo-600 dark:text-indigo-400">${escapeHTML(item.result)}</div>
           <span class="text-xs text-neutral-400">Click để dùng lại</span>
         </div>
-      </div>
-    `).join('');
+      </button>
+    `,
+      )
+      .join("");
 
-    historyList.querySelectorAll('.history-item').forEach(el => {
-      el.addEventListener('click', () => {
+    historyList.querySelectorAll(".history-item").forEach((el) => {
+      el.addEventListener("click", () => {
         window.soundEngine.playClick();
         const idx = el.dataset.idx;
         const item = list[idx];
         if (item) {
           window.casioCalc.expression = item.expr;
-          window.casioCalc.result = item.result;
-          window.casioCalc.isResultDisplayed = true;
-          switchTab('calc');
+          window.casioCalc.isResultDisplayed = false;
+          window.casioCalc.result = "0";
+          switchTab("calc");
           updateScreen();
         }
       });
@@ -724,13 +940,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (historyClearBtn) {
-    historyClearBtn.addEventListener('click', () => {
+    historyClearBtn.addEventListener("click", () => {
       window.soundEngine.playClick();
       window.casioCalc.clearHistory();
       renderHistory();
+      renderRecentHistory();
     });
   }
 
+  function renderRecentHistory() {
+    const container = document.getElementById("recent-history");
+    const list = window.casioCalc.history.slice(0, 3);
+    if (!list.length) {
+      container.innerHTML =
+        '<div class="recent-empty"><span>↺</span><p>Những con số bắt đầu từ đây.</p><small>Phép tính của bạn sẽ xuất hiện tại đây.<br>Thử một ví dụ để bắt đầu nhé.</small></div>';
+      return;
+    }
+    container.innerHTML = list
+      .map(
+        (item, index) =>
+          `<button class="recent-item" data-index="${index}" title="Dùng lại phép tính"><span>${escapeHTML(item.expr)}</span><strong>${escapeHTML(item.result)}</strong></button>`,
+      )
+      .join("");
+    container.querySelectorAll("button").forEach((button) =>
+      button.addEventListener("click", () => {
+        window.casioCalc.expression = list[Number(button.dataset.index)].expr;
+        window.casioCalc.isResultDisplayed = false;
+        updateScreen();
+      }),
+    );
+  }
+
+  calculateDownload();
   // Initial load
   updateScreen();
   runIpCalculation();
