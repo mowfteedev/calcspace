@@ -10,7 +10,7 @@ const context = vm.createContext({
 });
 for (const file of ["calculator", "ip-calc", "converter"])
   vm.runInContext(
-    readFileSync(`${__dirname}/../js/${file}.js`, "utf8"),
+    readFileSync(`${__dirname}/../public/js/${file}.js`, "utf8"),
     context,
   );
 const { casioCalc: calc, ipCalc: ip, unitConverter: conv } = context.window;
