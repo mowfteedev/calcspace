@@ -1,11 +1,9 @@
-const RELEASE = "editor-20261023-3";
+const RELEASE = "cleanup-20261028-1";
 const CACHE_NAME = `calcspace-${RELEASE}`;
 const ASSETS = [
   "./",
   "./index.html",
-  `./css/utilities.css?v=${RELEASE}`,
   `./css/style.css?v=${RELEASE}`,
-  `./js/audio.js?v=${RELEASE}`,
   `./js/calculator.js?v=${RELEASE}`,
   `./js/ip-calc.js?v=${RELEASE}`,
   `./js/converter.js?v=${RELEASE}`,
